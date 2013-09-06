@@ -34,6 +34,8 @@ module.exports = function(grunt) {
         'client/component/CircleRenderComponent.js',
         'client/component/RemoteClientComponent.js',
         'client/ui/UIManager.js',
+        'client/ui/UI.js',
+        'client/ui/UIButton.js',
         'client/ui/UIMain.js',
         'client/ui/UIMultiplayerSelect.js',
         'client/ui/UIBack.js',
