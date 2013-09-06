@@ -45,7 +45,7 @@ global.GuiButton = function(text, x, y, w, h) {
     this.w = w;
     this.h = h;
 
-    this.normalColor = '#000';
+    this.color = '#000';
     this.overlayColor = 'rgb(17, 169, 207)';
 
     this.align = 'center';
@@ -56,28 +56,42 @@ global.GuiButton = function(text, x, y, w, h) {
     this.wasDownHere = false;
 }
 
+GuiButton.prototype.setColor = function(color) {
+    this.color = color;
+}
+
+GuiButton.prototype.setOverlayColor = function(color) {
+    this.overlayColor = color;
+}
+
+GuiButton.prototype.setAlign = function(align) {
+    this.align = align;
+}
+
+GuiButton.prototype.setSize = function(size) {
+    this.size = size;
+}
+
 GuiButton.prototype.render = function(c) {
     var x = this.align == 'center' ? this.x - c.measureText(this.text, this.size) / 2 : this.x;
 
-    if (this.getMouseOver()) {
+    if (this._getMouseOver()) {
         c.fillText(this.text, x, this.y, this.overlayColor, this.size);
     } else {
-        c.fillText(this.text, x, this.y, this.normalColor, this.size);
+        c.fillText(this.text, x, this.y, this.color, this.size);
     }
 }
 
-GuiButton.prototype.getMouseOver = function() {
+GuiButton.prototype._getMouseOver = function() {
     var mx = Input.getMousePosition()[0],
-        my = Input.getMousePosition()[1],
-        ml = Input.getMousePressed(Input.BUTTON_LEFT),
-        mr = Input.getMousePressed(Input.BUTTON_RIGHT);
+        my = Input.getMousePosition()[1];
 
     var x = this.align == 'center' ? this.x - Canvas.measureText(this.text, this.size) / 2 : this.x;
     if (mx < x || mx > x + this.w || my < this.y || my > this.y + this.h) return false;
     return true;
 }
 
-GuiButton.prototype.getMousePressed = function() {
+GuiButton.prototype._getMousePressed = function() {
     return Input.getMousePressed(Input.BUTTON_LEFT);
 }
 
@@ -86,16 +100,16 @@ GuiButton.prototype.getClicked = function() {
 }
 
 GuiButton.prototype.update = function() {
-    this.mouseover = this.getMouseOver();
+    this.mouseover = this._getMouseOver();
 
-    var down = this.getMousePressed();
+    var down = this._getMousePressed();
     if (!this.wasDown && down) {
         this.wasDown = true;
-        if (this.getMouseOver()) {
+        if (this._getMouseOver()) {
             this.wasDownHere = true;
         }
     } else if (this.wasDown && !down) {
-        if (this.wasDownHere && this.getMouseOver()) {
+        if (this.wasDownHere && this._getMouseOver()) {
             this.pressed = true;
         }
         this.wasDown = false;
