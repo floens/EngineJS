@@ -1,0 +1,61 @@
+==========
+= Todo:
+==========
+- Move to a component entity system - DONE!!! YEAH
+
+- System setLoopType(System.TICK_LOOP || System.RENDER_LOOP)
+
+
+
+
+
+==========
+= Uploading to the internet
+==========
+- Run "grunt" and copy the files in build/
+- Change protocolversion in MainServer to match that of MainClient
+
+
+==========
+= Adding a file:
+==========
+
+Server:
+- Add to the server/ folder.
+- Add a 'require()' to MainServer.js.
+
+Client:
+- Add to the client/ folder.
+- Add a script tag to index.html.
+- Add to Grunt
+
+Shared:
+- Do client and server.
+
+If it's an entity:
+- Add it to the Protocol > EntityTypes
+
+==========
+= Browser required capabilities:
+==========
+    - Canvas (2d)
+
+Not required but disables multiplayer or delays map loading extremely:
+    - WebSockets
+    - TypedArrays
+
+
+==========
+= EntityTracker
+==========
+
+For servers:
+Keeps track of all entities in the world with it's clients
+
+Add/remove entities with EntityTracker.addEntity/.removeEntity
+
+EntityTracker.entries holds a list of entries
+Every time a entity gets added to EntityTracker, a EntityTrackerEntry object is created, with the entity
+
+EntityTrackerEntry takes care of adding and removing itself for the clients
+

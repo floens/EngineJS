@@ -1,0 +1,50 @@
+#body {
+    margin: 0;
+    padding: 0;
+    background: url("../res/bg.png") #000;
+    font-family: Helvetica, sans-serif;
+    font-size: 16px;
+}
+
+#container {
+    margin: 0 auto 0 auto;
+    background: #fff;
+    position: relative;
+    overflow: hidden;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+}
+
+#container canvas {
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+#container input {
+    position: absolute;
+    left: 0;
+    top: 0;
+    padding: 0;
+    margin: 0;
+    border: 0;
+    outline: 0;
+    text-align: center;
+    font-size: 18px;
+}
+
+#container .error {
+    margin: 30px 0 0 0;
+    padding: 0 100px 0 100px;
+}
+
+#container .error h1 {
+    font-size: 48px;
+    text-align: center;
+    font-weight: normal;
+}
+
+input[type=text]::-ms-clear {
+    display: none;
+}
