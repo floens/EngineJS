@@ -51,7 +51,9 @@ RemoteClientSystem.prototype.sendPacket = function(packet) {
 
 RemoteClientSystem.prototype.connect = function(url) {
     if (!this.checkWebSocketSupport()) {
-        GuiManager.set(new GuiBack('This browser doesn\'t support multiplayer.'))
+        GuiManager.set(new GuiBack('This browser doesn\'t support multiplayer.', function() {
+            GuiManager.set(null);
+        }))
         return;
     }
 
@@ -131,9 +133,9 @@ RemoteClientSystem.prototype.startConnection = function(url) {
     connection.onerror = function(event) {
         log('Connection error.');
 
-        GuiManager.set(new GuiBack('Connection error.'), function() {
+        GuiManager.set(new GuiBack('Connection error.', function() {
             GuiManager.set(null);
-        });
+        }));
     }
 }
 

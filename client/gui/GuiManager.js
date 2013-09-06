@@ -50,19 +50,23 @@ global.GuiButton = function(text, x, y, w, h) {
 
     this.align = 'center';
     this.size = 18;
+
+    this.pressed = false;
+    this.wasDown = false;
+    this.wasDownHere = false;
 }
 
 GuiButton.prototype.render = function(c) {
     var x = this.align == 'center' ? this.x - c.measureText(this.text, this.size) / 2 : this.x;
 
-    if (this.mouseover) {
+    if (this.getMouseOver()) {
         c.fillText(this.text, x, this.y, this.overlayColor, this.size);
     } else {
         c.fillText(this.text, x, this.y, this.normalColor, this.size);
     }
 }
 
-GuiButton.prototype.isMouseOver = function() {
+GuiButton.prototype.getMouseOver = function() {
     var mx = Input.getMousePosition()[0],
         my = Input.getMousePosition()[1],
         ml = Input.getMousePressed(Input.BUTTON_LEFT),
@@ -73,12 +77,30 @@ GuiButton.prototype.isMouseOver = function() {
     return true;
 }
 
+GuiButton.prototype.getMousePressed = function() {
+    return Input.getMousePressed(Input.BUTTON_LEFT);
+}
+
 GuiButton.prototype.getClicked = function() {
-    return this.isMouseOver() && Input.getMousePressed(Input.BUTTON_LEFT);
+    return this.pressed;
 }
 
 GuiButton.prototype.update = function() {
-    this.mouseover = this.isMouseOver();
+    this.mouseover = this.getMouseOver();
+
+    var down = this.getMousePressed();
+    if (!this.wasDown && down) {
+        this.wasDown = true;
+        if (this.getMouseOver()) {
+            this.wasDownHere = true;
+        }
+    } else if (this.wasDown && !down) {
+        if (this.wasDownHere && this.getMouseOver()) {
+            this.pressed = true;
+        }
+        this.wasDown = false;
+        this.wasDownHere = false;
+    }
 }
 
 /**********
