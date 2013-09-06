@@ -2,28 +2,28 @@
 'use strict';
 
 /**
- * Displays a message like GuiText, but with a back button that calls the callback
+ * Displays a message like UIText, but with a back button that calls the callback
  * @param {string}   Text to display
  * @param {Function} callback to execute on button click
  */
-global.GuiBack = function(text, callback) {
-    Gui.call(this);
+global.UIBack = function(text, callback) {
+    UI.call(this);
 
     this.displayText = text;
     this.callback = callback;
 
-    this.returnButton = new GuiButton('Return', this.w / 2, this.h / 2 + 20, 50, 25);
+    this.returnButton = new UIButton('Return', this.w / 2, this.h / 2 + 20, 50, 25);
 }
-GuiBack.prototype = Object.create(Gui.prototype);
-GuiBack.prototype.onResize = function() {
-    Gui.prototype.onResize.call(this);
+UIBack.prototype = Object.create(UI.prototype);
+UIBack.prototype.onResize = function() {
+    UI.prototype.onResize.call(this);
 
     this.returnButton.x = this.w / 2;
     this.returnButton.y = this.h / 2 + 20;
 }
 
-GuiBack.prototype.render = function() {
-    Gui.prototype.render.call(this);
+UIBack.prototype.render = function() {
+    UI.prototype.render.call(this);
 
     this.canvas.clear();
 
@@ -32,8 +32,8 @@ GuiBack.prototype.render = function() {
     this.returnButton.render(this.canvas);
 }
 
-GuiBack.prototype.tick = function() {
-    Gui.prototype.tick.call(this);
+UIBack.prototype.tick = function() {
+    UI.prototype.tick.call(this);
 
     this.returnButton.update();
     if (this.returnButton.getClicked()) {

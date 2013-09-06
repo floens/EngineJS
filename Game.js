@@ -8,7 +8,7 @@ Engine.setOptions({
 
 
 Engine.load(function() {
-    GuiManager.set(new GuiLoad(start));
+    UIManager.set(new UILoad(start));
 
     AssetManager.load('res/EntityPlayer.png', 'player', {
         scale: 4
@@ -19,7 +19,7 @@ Engine.load(function() {
 var _worldManager;
 
 var start = function() {
-    GuiManager.set(null);
+    UIManager.set(null);
 
     var world = new World();
     world.setRemote(false);

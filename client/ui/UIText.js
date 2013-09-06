@@ -5,16 +5,16 @@
 * Displays a message
 */
 
-global.GuiText = function(text, color) {
-    Gui.call(this);
+global.UIText = function(text, color) {
+    UI.call(this);
 
     this.displayText = text;
     this.color = color == undefined ? '#000' : color;
 }
-GuiText.prototype = Object.create(Gui.prototype);
+UIText.prototype = Object.create(UI.prototype);
 
-GuiText.prototype.render = function() {
-    Gui.prototype.render.call(this);
+UIText.prototype.render = function() {
+    UI.prototype.render.call(this);
 
     this.canvas.clear();
 

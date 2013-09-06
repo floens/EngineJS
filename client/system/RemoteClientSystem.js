@@ -51,13 +51,13 @@ RemoteClientSystem.prototype.sendPacket = function(packet) {
 
 RemoteClientSystem.prototype.connect = function(url) {
     if (!this.checkWebSocketSupport()) {
-        GuiManager.set(new GuiBack('This browser doesn\'t support multiplayer.', function() {
-            GuiManager.set(null);
+        UIManager.set(new UIBack('This browser doesn\'t support multiplayer.', function() {
+            UIManager.set(null);
         }))
         return;
     }
 
-    GuiManager.set(new GuiText('Connecting...'));
+    UIManager.set(new UIText('Connecting...'));
 
     this.startConnection(url);
 }
@@ -68,7 +68,7 @@ RemoteClientSystem.prototype.startConnection = function(url) {
 
     var self = this;
     connection.onopen = function(event) {
-        GuiManager.set(new GuiText('Connected.'));
+        UIManager.set(new UIText('Connected.'));
 
         self.connected = true;
         connection.netHandler = new NetHandler(connection, self);
@@ -125,16 +125,16 @@ RemoteClientSystem.prototype.startConnection = function(url) {
 
         connection = null;
 
-        GuiManager.set(new GuiBack(text, function() {
-            GuiManager.set(null);
+        UIManager.set(new UIBack(text, function() {
+            UIManager.set(null);
         }));
     }
 
     connection.onerror = function(event) {
         log('Connection error.');
 
-        GuiManager.set(new GuiBack('Connection error.', function() {
-            GuiManager.set(null);
+        UIManager.set(new UIBack('Connection error.', function() {
+            UIManager.set(null);
         }));
     }
 }

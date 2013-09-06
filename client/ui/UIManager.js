@@ -1,44 +1,44 @@
 (function(global, undefined) {
 'use strict';
 
-global.GuiManager = {};
+global.UIManager = {};
 
 var _current = null;
-GuiManager.set = function(e) {
+UIManager.set = function(e) {
     if (_current != null) _current.onRemove();
     _current = e;
 }
 
-GuiManager.get = function() {
+UIManager.get = function() {
     return _current;
 }
 
-GuiManager.clear = function() {
+UIManager.clear = function() {
     this.set(null);
 }
 
-GuiManager.onResize = function() {
+UIManager.onResize = function() {
     if (_current == null) return;
 
     _current.onResize();
 }
 
-GuiManager.render = function() {
+UIManager.render = function() {
     if (_current == null) return;
 
     _current.render();
 }
 
-GuiManager.tick = function() {
+UIManager.tick = function() {
     if (_current == null) return;
 
     _current.tick();
 }
 
 /**********
-* GuiButton
+* UIButton
 */
-global.GuiButton = function(text, x, y, w, h) {
+global.UIButton = function(text, x, y, w, h) {
     this.text = text;
     this.x = x;
     this.y = y;
@@ -56,23 +56,23 @@ global.GuiButton = function(text, x, y, w, h) {
     this.wasDownHere = false;
 }
 
-GuiButton.prototype.setColor = function(color) {
+UIButton.prototype.setColor = function(color) {
     this.color = color;
 }
 
-GuiButton.prototype.setOverlayColor = function(color) {
+UIButton.prototype.setOverlayColor = function(color) {
     this.overlayColor = color;
 }
 
-GuiButton.prototype.setAlign = function(align) {
+UIButton.prototype.setAlign = function(align) {
     this.align = align;
 }
 
-GuiButton.prototype.setSize = function(size) {
+UIButton.prototype.setSize = function(size) {
     this.size = size;
 }
 
-GuiButton.prototype.render = function(c) {
+UIButton.prototype.render = function(c) {
     var x = this.align == 'center' ? this.x - c.measureText(this.text, this.size) / 2 : this.x;
 
     if (this._getMouseOver()) {
@@ -82,7 +82,7 @@ GuiButton.prototype.render = function(c) {
     }
 }
 
-GuiButton.prototype._getMouseOver = function() {
+UIButton.prototype._getMouseOver = function() {
     var mx = Input.getMousePosition()[0],
         my = Input.getMousePosition()[1];
 
@@ -91,15 +91,15 @@ GuiButton.prototype._getMouseOver = function() {
     return true;
 }
 
-GuiButton.prototype._getMousePressed = function() {
+UIButton.prototype._getMousePressed = function() {
     return Input.getMousePressed(Input.BUTTON_LEFT);
 }
 
-GuiButton.prototype.getClicked = function() {
+UIButton.prototype.getClicked = function() {
     return this.pressed;
 }
 
-GuiButton.prototype.update = function() {
+UIButton.prototype.update = function() {
     this.mouseover = this._getMouseOver();
 
     var down = this._getMousePressed();
@@ -118,33 +118,33 @@ GuiButton.prototype.update = function() {
 }
 
 /**********
-* Gui
+* UI
 */
-global.Gui = function() {
+global.UI = function() {
     this.w = Screen.width;
     this.h = Screen.height;
     this.canvas = new Canvas(this.w, this.h, 80);
 }
 
-Gui.prototype.onRemove = function() {
+UI.prototype.onRemove = function() {
     this.canvas.remove();
 }
 
-Gui.prototype.onReinitialize = function() {
+UI.prototype.onReinitialize = function() {
 
 }
 
-Gui.prototype.onResize = function() {
+UI.prototype.onResize = function() {
     this.w = Screen.width;
     this.h = Screen.height;
     this.canvas.setDimensions(this.w, this.h);
 }
 
-Gui.prototype.render = function() {
+UI.prototype.render = function() {
 
 }
 
-Gui.prototype.tick = function() {
+UI.prototype.tick = function() {
     
 }
 

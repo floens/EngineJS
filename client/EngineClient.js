@@ -84,7 +84,7 @@ var _init = function() {
 var _doTick = function() {
     if (_paused) return;
 
-    GuiManager.tick();
+    UIManager.tick();
 
     if (_tickFunction != null) _tickFunction();
 }
@@ -95,7 +95,7 @@ var _doTick = function() {
 var _doRender = function() {
     if (_paused) return;
 
-    GuiManager.render();
+    UIManager.render();
     
     if (_renderFunction != null) _renderFunction();
 }
@@ -105,7 +105,7 @@ var _doRender = function() {
  * @return {[type]}
  */
 var _reset = function() {
-    GuiManager.clear();
+    UIManager.clear();
 }
 
 /**
@@ -192,7 +192,7 @@ var _onResize = function() {
     Screen.containerElement.style.width = (Screen.width) + 'px';
     Screen.containerElement.style.height = (Screen.height) + 'px';
 
-    GuiManager.onResize();
+    UIManager.onResize();
 }
 
 /**

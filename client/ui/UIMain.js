@@ -1,19 +1,19 @@
 (function(global, undefined) {
 'use strict';
 
-global.GuiMain = function() {
-    Gui.call(this);
+global.UIMain = function() {
+    UI.call(this);
 
-    this.singleplayerButton = new GuiButton('Singleplayer', this.w / 2 - 60, this.h - 100, 100, 30);
+    this.singleplayerButton = new UIButton('Singleplayer', this.w / 2 - 60, this.h - 100, 100, 30);
     this.spOffset = 0;
 
-    this.multiplayerButton = new GuiButton('Multiplayer', this.w / 2 + 60, this.h - 100, 100, 30);
+    this.multiplayerButton = new UIButton('Multiplayer', this.w / 2 + 60, this.h - 100, 100, 30);
     this.mpOffset = 0;
 }
-GuiMain.prototype = Object.create(Gui.prototype);
+UIMain.prototype = Object.create(UI.prototype);
 
-GuiMain.prototype.tick = function() {
-    Gui.prototype.tick.call(this);
+UIMain.prototype.tick = function() {
+    UI.prototype.tick.call(this);
 
     // Singleplayer button
     this.singleplayerButton.update();
@@ -34,7 +34,7 @@ GuiMain.prototype.tick = function() {
     // Multiplayer button
     this.multiplayerButton.update();
     if (this.multiplayerButton.getClicked()) {
-        GuiManager.set(new GuiMultiplayerSelect());
+        UIManager.set(new UIMultiplayerSelect());
         return;
     }
 
@@ -48,15 +48,15 @@ GuiMain.prototype.tick = function() {
     this.multiplayerButton.y = this.h - 100 - this.mpOffset;
 }
 
-GuiMain.prototype.onResize = function() {
-    Gui.prototype.onResize.call(this);
+UIMain.prototype.onResize = function() {
+    UI.prototype.onResize.call(this);
 
     this.singleplayerButton.x = this.w / 2 - 60;
     this.multiplayerButton.x = this.w / 2 + 60;
 }
 
-GuiMain.prototype.render = function() {
-    Gui.prototype.render.call(this);
+UIMain.prototype.render = function() {
+    UI.prototype.render.call(this);
 
     var c = this.canvas;
     c.clear();

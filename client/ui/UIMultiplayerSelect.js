@@ -1,22 +1,22 @@
 (function(global, undefined) {
 'use strict';
 
-global.GuiMultiplayerSelect = function() {
-    Gui.call(this);
+global.UIMultiplayerSelect = function() {
+    UI.call(this);
 
     this.serverUrl = '';
 
-    this.doneButton = new GuiButton('Done', this.w / 2, this.h / 2 + 40, 60, 25);
-    this.returnButton = new GuiButton('Return', this.w / 2, this.h / 2 + 70, 60, 25);
+    this.doneButton = new UIButton('Done', this.w / 2, this.h / 2 + 40, 60, 25);
+    this.returnButton = new UIButton('Return', this.w / 2, this.h / 2 + 70, 60, 25);
 
     Input.putTextForm(this.w / 2 - 100, this.h / 2 - 20, 200, 30, Main.defaultServerUrl);
 
     this.blinkTime = 0;
 }
-GuiMultiplayerSelect.prototype = Object.create(Gui.prototype);
+UIMultiplayerSelect.prototype = Object.create(UI.prototype);
 
-GuiMultiplayerSelect.prototype.onResize = function() {
-    Gui.prototype.onResize.call(this);
+UIMultiplayerSelect.prototype.onResize = function() {
+    UI.prototype.onResize.call(this);
 
     this.returnButton.x = this.w / 2;
     this.returnButton.y = this.h / 2 + 70;
@@ -27,8 +27,8 @@ GuiMultiplayerSelect.prototype.onResize = function() {
     Input.setTextFormPosition(this.w / 2 - 100, this.h / 2 - 20);
 }
 
-GuiMultiplayerSelect.prototype.render = function() {
-    Gui.prototype.render.call(this);
+UIMultiplayerSelect.prototype.render = function() {
+    UI.prototype.render.call(this);
 
     var c = this.canvas;
     c.clear();
@@ -37,8 +37,8 @@ GuiMultiplayerSelect.prototype.render = function() {
     this.returnButton.render(c);
 }
 
-GuiMultiplayerSelect.prototype.tick = function() {
-    Gui.prototype.tick.call(this);
+UIMultiplayerSelect.prototype.tick = function() {
+    UI.prototype.tick.call(this);
 
     this.blinkTime++;
 
@@ -50,14 +50,14 @@ GuiMultiplayerSelect.prototype.tick = function() {
             this.serverUrl = string;
 
             Input.removeTextForm();
-            GuiManager.set(new GuiNameSelect(string));
+            UIManager.set(new UINameSelect(string));
         }
     }
 
     this.returnButton.update();
     if (this.returnButton.getClicked()) {
         Input.removeTextForm();
-        GuiManager.set(new GuiMain());
+        UIManager.set(new UIMain());
         return;
     }
 }

@@ -5,16 +5,16 @@
 * Displays a message
 */
 
-global.GuiLoad = function(callback) {
-    Gui.call(this);
+global.UILoad = function(callback) {
+    UI.call(this);
 
     this.callback = callback;
     this.done = false;
 }
-GuiLoad.prototype = Object.create(Gui.prototype);
+UILoad.prototype = Object.create(UI.prototype);
 
-GuiLoad.prototype.tick = function() {
-    Gui.prototype.tick.call(this);
+UILoad.prototype.tick = function() {
+    UI.prototype.tick.call(this);
 
     this.done = AssetManager.progress.isDone();
 
@@ -23,8 +23,8 @@ GuiLoad.prototype.tick = function() {
     }
 }
 
-GuiLoad.prototype.render = function() {
-    Gui.prototype.render.call(this);
+UILoad.prototype.render = function() {
+    UI.prototype.render.call(this);
 
     this.canvas.clear();
 
