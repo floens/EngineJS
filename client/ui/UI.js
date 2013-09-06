@@ -11,10 +11,6 @@ UI.prototype.onRemove = function() {
     this.canvas.remove();
 }
 
-UI.prototype.onReinitialize = function() {
-
-}
-
 UI.prototype.onResize = function() {
     this.w = Screen.width;
     this.h = Screen.height;
