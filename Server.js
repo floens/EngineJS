@@ -21,7 +21,7 @@ var start = function() {
     var world = new World();
     world.setRemote(false);
     world.addSystem(new MovementSystem());
-    world.addSystem(new RemoteServerSystem());
+    world.addSystem(new RemoteServerSystem(8080, 32));
 
     // Debug
     global.world = world;

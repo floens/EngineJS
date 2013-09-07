@@ -9,6 +9,7 @@ global.RemoteClientSystem = function(url) {
 
     this.connected = false;
     this.connection = null;
+    this.netHandler = null;
 
     // Holds the kick message if clients gets disconnected
     this.kickMessage = '';
@@ -21,6 +22,10 @@ System.registerSystem(RemoteClientSystem, 5);
 RemoteClientSystem.prototype.tick = function() {
     this.parent.tick.call(this);
 
+    if (this.connected) {
+        this.netHandler.tick();
+    }
+
     for (var i = 0; i < this.entities.length; i++) {
         this.processEntity(this.entities[i]);
     }
@@ -30,22 +35,13 @@ RemoteClientSystem.prototype.processEntity = function(entity) {
 
 }
 
-RemoteClientSystem.prototype.sendHandshake = function() {
-    this.sendPacket(new HandshakePacket('Message!'));
-}
-
 RemoteClientSystem.prototype.handlePacket = function(packet) {
     log('Received a packet!');
     log(packet, true);
 }
 
-
 RemoteClientSystem.prototype.sendPacket = function(packet) {
-    try {
-        this.connection.netHandler.writeConnection(Packet.writeStream(packet));
-    } catch(err) {
-        log(err, true);
-    }
+    this.netHandler.writeConnection(packet);
 }
 
 RemoteClientSystem.prototype.connect = function(url) {
@@ -63,22 +59,22 @@ RemoteClientSystem.prototype.connect = function(url) {
 
 RemoteClientSystem.prototype.startConnection = function(url) {
     var connection = this.connection = new WebSocket(url);
-    this.connection.netHandler = null;
 
     var self = this;
     connection.onopen = function(event) {
         UIManager.set(new UIText('Connected.'));
 
         self.connected = true;
-        connection.netHandler = new NetHandler(connection, self);
+        self.netHandler = new NetHandler(connection, self);
 
-        self.sendHandshake();
+        // TODO DEBUG
+        self.sendPacket(new HandshakePacket('Message!'));
     }
 
     connection.onmessage = function(event) {
         if (connection == null) return;
 
-        var packet = connection.netHandler.onMessage(event.data);
+        var packet = self.netHandler.readConnection(event.data);
 
         self.handlePacket(packet);
     }
@@ -89,6 +85,10 @@ RemoteClientSystem.prototype.startConnection = function(url) {
         }
 
         self.connected = false;
+        self.netHandler.disconnect();
+        self.netHandler = null;
+        self.connection = null;
+        connection = null;
 
         log('Connection closed.');
 
@@ -122,8 +122,6 @@ RemoteClientSystem.prototype.startConnection = function(url) {
             }
         }
 
-        connection = null;
-
         UIManager.set(new UIBack(text, function() {
             UIManager.set(null);
         }));
@@ -138,15 +136,9 @@ RemoteClientSystem.prototype.startConnection = function(url) {
     }
 }
 
-RemoteClientSystem.prototype.onKick = function(e) {
-    log('Kicked: ' + e);
-    this.kickMessage = e;
-}
-
 RemoteClientSystem.prototype.getHandler = function() {
-    if (this.connection == null) return null;
     // null or netHandler
-    return this.connection.netHandler;
+    return this.netHandler;
 }
 
 // TODO move to main

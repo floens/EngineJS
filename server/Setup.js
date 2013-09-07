@@ -30,11 +30,10 @@ require('../shared/item/Item.js');
 require('../shared/net/Packet.js');
 require('../shared/net/DataStream.js');
 require('../shared/net/Packets.js');
+require('../shared/net/NetHandler.js');
 
 require('../server/system/RemoteServerSystem.js');
 
-require('../server/net/NetManagerServer.js');
-require('../server/net/NetHandlerServer.js');
 require('../server/net/EntityTracker.js');
 require('../server/net/EntityTrackerEntry.js');
 

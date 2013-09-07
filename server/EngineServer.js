@@ -45,13 +45,6 @@ Engine.resume = function() {
 var _init = function() {
     log('Initializing.');
 
-
-    if (!_loadOptions || !Number.isFinite(_loadOptions.port) || !Number.isFinite(_loadOptions.maxConnections)) {
-        throw new Error('Initialize: Specify the port number and max connections to listen to in Engine.setOptions(optionsObject) (port, maxConnections).');
-    }
-
-    NetManager.start(_loadOptions.port, _loadOptions.maxConnections);
-
     _tickLoop();
 
     // Start the user's load function

@@ -69,13 +69,27 @@ Packet.readStream = function(dataStream, isClient) {
     } 
 }
 
+/**
+ * Writes packet to a DataStream
+ * @param  {Packet}     packet   The packet to write
+ * @param  {Boolean}    isClient Is this a server or client
+ * @return {DataStream}          Written DataStream
+ * @throws {Error}               If packet is invalid
+ */
 Packet.writeStream = function(packet, isClient) {
+    var id = packet.id;
+    var registered = _registeredPackets.get(id);
+
+    if ((isClient && !registered.clientToServer) || (!isClient && !registered.serverToClient)) {
+        throw new Error('Invalid packet.');
+    }
+
     var stream = new DataStream();
-    stream.writeNumber(packet.id);
+    stream.writeNumber(id);
 
     packet.write(stream);
 
-    return stream.getData();
+    return stream;
 }
 
 // Private classes
