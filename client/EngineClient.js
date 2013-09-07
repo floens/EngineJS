@@ -102,7 +102,6 @@ var _doRender = function() {
 
 /**
  * Called on errors
- * @return {[type]}
  */
 var _reset = function() {
     UIManager.clear();

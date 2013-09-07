@@ -8,7 +8,7 @@ global.System = function() {
      * False if on render loop
      * @type {Boolean}
      */
-    this.tickSystem = true;
+    this._loopType = System.TICK_LOOP;
 
     this.aspects = [];
 
@@ -53,6 +53,14 @@ System.prototype.tick = function() {
 
 }
 
+System.prototype.setLoopType = function(type) {
+    this._loopType = type;
+}
+
+System.prototype.getLoopType = function() {
+    return this._loopType;
+}
+
 System.prototype.toString = function() {
     return '[object System]';
 }
@@ -69,5 +77,8 @@ System.registerSystem = function(system, id) {
     system.prototype.id = id;
     system.id = id;
 }
+
+System.TICK_LOOP = 0;
+System.RENDER_LOOP = 1;
 
 })(global);

@@ -4,9 +4,8 @@
 global.RemoteClientSystem = function(url) {
     System.call(this);
 
-    this.tickSystem = true;
     this.addAspect(PositionComponent);
-    this.addAspect(RemoteClientComponent);
+    this.addAspect(RemoteComponent);
 
     this.connected = false;
     this.connection = null;

@@ -26,8 +26,9 @@ World.prototype.tick = function() {
 World.prototype.render = function() {
     var list = this.systems;
     for (var i = 0, j = list.length; i < j; i++) {
-        if (list[i].tickSystem) continue;
-        list[i].process();
+        if (list[i].getLoopType() == System.RENDER_LOOP) {
+            list[i].process();
+        }
     }
 }
 
@@ -35,8 +36,9 @@ World.prototype.render = function() {
 World.prototype.tickSystems = function() {
     var list = this.systems;
     for (var i = 0, j = list.length; i < j; i++) {
-        if (!list[i].tickSystem) continue;
-        list[i].process();
+        if (list[i].getLoopType() == System.TICK_LOOP) {
+            list[i].process();
+        }
     }
 }
 

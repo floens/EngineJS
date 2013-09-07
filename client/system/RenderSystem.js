@@ -5,7 +5,7 @@ global.RenderSystem = function() {
     System.call(this);
 
     // Not on tick, but on render
-    this.tickSystem = false;
+    this.setLoopType(System.RENDER_LOOP);
     this.addAspect(PositionComponent);
     this.addAspect(RenderComponent);
 

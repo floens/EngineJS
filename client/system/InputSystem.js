@@ -4,7 +4,6 @@
 global.InputSystem = function() {
     System.call(this);
 
-    this.tickSystem = true;
     this.addAspect(PositionComponent);
     this.addAspect(ControllableComponent);
 }

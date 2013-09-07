@@ -16,6 +16,7 @@ require('../shared/component/Component.js');
 require('../shared/component/PositionComponent.js');
 require('../shared/component/CollidableComponent.js');
 require('../shared/component/CircleCollidableComponent.js');
+require('../shared/component/RemoteComponent.js');
 
 require('../shared/system/System.js');
 require('../shared/system/MovementSystem.js');
@@ -30,6 +31,7 @@ require('../shared/net/Packet.js');
 require('../shared/net/DataStream.js');
 require('../shared/net/Packets.js');
 
+require('../server/system/RemoteServerSystem.js');
 
 require('../server/net/NetManagerServer.js');
 require('../server/net/NetHandlerServer.js');
