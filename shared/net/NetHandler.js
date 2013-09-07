@@ -34,12 +34,10 @@ NetHandler.prototype.tick = function() {
     this.tickCount++;
 }
 
-NetHandler.prototype.disconnect = function(reason) {
+NetHandler.prototype.disconnect = function() {
     this.connected = false;
 
-    if (reason == undefined) reason = null;
-
-    this.connection.close(0, reason);
+    this.connection.close();
 }
 
 NetHandler.prototype.getConnected = function() {

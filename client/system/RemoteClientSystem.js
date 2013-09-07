@@ -110,11 +110,7 @@ RemoteClientSystem.prototype.startConnection = function(url) {
                     text = 'Protocol error.';
                     break;
                 case 1006: // CLOSE_ABNORMAL
-                    if (connection.netHandler != null) {
-                        text = 'Connection closed.';
-                    } else {
-                        text = 'Could not connect.';
-                    }
+                    text = 'Connection closed.';
                     break;
                 default:
                     text = 'Internal connection error.';
