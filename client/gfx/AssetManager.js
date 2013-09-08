@@ -30,22 +30,22 @@ AssetLoadProgress.prototype.upTotal = function() {
 
 
 var AssetManager = {
-    assetMap: {},
+    assetMap: new Map(),
     progress: new AssetLoadProgress()
 }
 AssetManager.load = function(src, name, options) {
-    if (this.assetMap[name] != undefined) {
+    if (this.assetMap.has(name)) {
         log('AssetManager: Asset with that name already requested.', log.ERROR);
         return;
     }
 
-    this.assetMap[name] = new Asset(src, options);
+    this.assetMap.set(name, new Asset(src, options));
 
     this.progress.upTotal();
 }
 
 AssetManager.getAsset = function(name) {
-    var asset = this.assetMap[name];
+    var asset = this.assetMap.get(name);
     if (asset == undefined) throw new Error('Asset "' + name + '" is unknown.');
     if (!asset.loaded) {
         // log('AssetManager: Asset exists, but not fully loaded.', log.WARN);
@@ -55,7 +55,7 @@ AssetManager.getAsset = function(name) {
 }
 
 AssetManager.exists = function(name) {
-    return this.assetMap[name] != undefined;
+    return this.assetMap.has(name);
 }
 
 AssetManager.getProgress = function() {
