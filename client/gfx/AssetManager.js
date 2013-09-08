@@ -46,7 +46,7 @@ AssetManager.load = function(src, name, options) {
 
 AssetManager.getAsset = function(name) {
     var asset = this.assetMap.get(name);
-    if (asset == undefined) throw new Error('Asset "' + name + '" is unknown.');
+    if (asset == null) throw new Error('Asset "' + name + '" is unknown.');
     if (!asset.loaded) {
         // log('AssetManager: Asset exists, but not fully loaded.', log.WARN);
         return null;
