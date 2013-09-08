@@ -15,7 +15,7 @@ global.Entity = function(world) {
 
 // Set sessionId for this entity
 Entity.prototype.setSessionId = function(e) {
-    if (!Number.isFinite(e)) throw new Error('Entity: SessionId not a number.');
+    if (!Utils.isNumber(e)) throw new Error('Entity: SessionId not a number.');
     this.sessionId = e;
 }
 
@@ -43,7 +43,7 @@ Entity.prototype.getComponent = function(component) {
 // Static functions
 var _registeredEntities = new Map();
 Entity.registerEntity = function(entity, id) {
-    if (!Number.isFinite(id)) throw new Error('Id not a number.');
+    if (!Utils.isNumber(id)) throw new Error('Id not a number.');
     if (id <= 0) throw new Error('Invalid argument: Id below 1 reserved.');
     if (_registeredEntities.has(id)) {
         throw new Error('Entity with id already registered (' + id + ')');

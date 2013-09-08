@@ -26,7 +26,7 @@ var _registeredPackets = new Map();
  * @param  {boolean} serverToClient True if the client can accept this packet
  */
 Packet.registerPacket = function(packet, id, clientToServer, serverToClient) {
-    if (!Number.isFinite(id)) throw new Error('Id not a number.');
+    if (!Utils.isNumber(id)) throw new Error('Id not a number.');
     if (id <= 0) throw new Error('Invalid argument: Id below 1 reserved.');
     if (_registeredPackets.has(id)) {
         throw new Error('Packet with id already registered (' + id + ')');

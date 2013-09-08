@@ -12,7 +12,7 @@ Component.prototype.toString = function() {
 // Static functions
 var _registeredComponents = new Map();
 Component.registerComponent = function(component, id) {
-    if (!Number.isFinite(id)) throw new Error('Id not a number.');
+    if (!Utils.isNumber(id)) throw new Error('Id not a number.');
     if (id <= 0) throw new Error('Invalid argument: Id below 1 reserved.');
     if (_registeredComponents.has(id)) {
         throw new Error('Component with id already registered (' + id + ')');
