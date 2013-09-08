@@ -26,7 +26,7 @@ var start = function() {
     world.addSystem(new MovementSystem());
     world.addSystem(new RenderSystem());
     world.addSystem(new InputSystem());
-    world.addSystem(new RemoteClientSystem('ws://localhost:8080'));
+    world.addSystem(new RemoteClientSystem('ws://localhost:8080', new PacketHandlerClient()));
 
     _worldManager = new WorldManager();
     _worldManager.setWorld(world);

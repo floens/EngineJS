@@ -18,4 +18,22 @@ HandshakePacket.prototype.write = function(dataStream) {
 }
 
 
+global.CreateEntityPacket = function() {
+    this.entity = null;
+}
+CreateEntityPacket.extend(Packet);
+Packet.registerPacket(CreateEntityPacket, 2, false, true);
+
+CreateEntityPacket.prototype.read = function(dataStream) {
+    
+}
+
+CreateEntityPacket.prototype.write = function(dataStream) {
+    
+}
+
+CreateEntityPacket.prototype.setEntity = function(e) {
+    this.entity = e;
+}
+
 })(global);

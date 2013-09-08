@@ -20,18 +20,8 @@ System.registerSystem(RemoteServerSystem, 6);
 RemoteServerSystem.prototype.tick = function() {
     this.parent.tick.call(this);
 
-    var list = this.connections;
-    for (var i = 0; i < list.length; i++) {
-        try {
-            list[i].netHandler.tick();
-        } catch(err) {
-            log('NetHandler error: ', log.ERROR);
-            log(err);
-        }
-    }
-
-    for (var i = 0; i < this.entities.length; i++) {
-        this.processEntity(this.entities[i]);
+    for (var i = 0; i < this.connections.length; i++) {
+        this.connections[i].netHandler.tick();
     }
 }
 
@@ -72,7 +62,9 @@ RemoteServerSystem.prototype.startServer = function(httpServer) {
             if (message.type === 'utf8') {
                 var packet = connection.netHandler.readConnection(message.utf8Data);
 
-                self.handlePacket(packet);
+                if (packet != null) {
+                    self.handlePacket(packet);
+                }
             }
         })
 

@@ -37,7 +37,11 @@ NetHandler.prototype.tick = function() {
 NetHandler.prototype.disconnect = function() {
     this.connected = false;
 
-    this.connection.close();
+    try {
+        this.connection.close();
+    } catch(err) {
+        log('Error closing connection.');
+    }
 }
 
 NetHandler.prototype.getConnected = function() {

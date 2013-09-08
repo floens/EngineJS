@@ -11,6 +11,7 @@ global.World = function(width, height) {
     this.systems = [];
 
     this.entitySessionIdMap = new Map();
+    this.systemIdMap = new Map();
 }
 
 // Called from managers
@@ -59,6 +60,18 @@ World.prototype.setRemote = function(remote) {
 World.prototype.addSystem = function(system) {
     if (!(system instanceof System)) throw new Error('Not a System.');
     this.systems.push(system);
+    this.systemIdMap.set(system.id, system);
+}
+
+/**
+ * Return system or throw error
+ * @param  {System} System class
+ * @return {System} System instance
+ */
+World.prototype.getSystem = function(system) {
+    var value = this.systemIdMap.get(system.id);
+    if (value == null) throw new Error('System not found on this world.');
+    return value;
 }
 
 /**

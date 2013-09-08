@@ -31,6 +31,7 @@ require('../shared/net/Packet.js');
 require('../shared/net/DataStream.js');
 require('../shared/net/Packets.js');
 require('../shared/net/NetHandler.js');
+require('../shared/net/PacketHandler.js');
 
 require('../server/system/RemoteServerSystem.js');
 

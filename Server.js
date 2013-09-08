@@ -14,8 +14,8 @@ Engine.load(function() {
     start();
 })
 
-
-var _world;
+var _world = null;
+var _entity = null;
 
 var start = function() {
     var world = new World();
@@ -24,13 +24,25 @@ var start = function() {
     world.addSystem(new RemoteServerSystem(8080, 32));
 
     // Debug
+    _world = world;
     global.world = world;
+
+    _entity = new EntityPlayer(world);
+    _entity.add();
 
     Engine.tick(tick);
 }
 
 var tick = function() {
     world.tick();
+}
+
+global._sendPacket = function() {
+    var remoteSystem = _world.getSystem(RemoteServerSystem);
+
+    if (remoteSystem.connections.length > 0) {
+        remoteSystem.connections[0].netHandler.writeConnection(new CreateEntityPacket(_entity));
+    }
 }
 
 
