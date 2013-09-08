@@ -63,6 +63,7 @@ var render = function() {
 }
 
 
+Engine.init();
 
 
 })(global);

@@ -31,6 +31,10 @@ Engine.tick = function(callback) {
     _tickFunction = callback;
 }
 
+Engine.init = function() {
+    _init();
+}
+
 Engine.render = function(callback) {
     _renderFunction = callback;
 }
@@ -60,6 +64,7 @@ var _init = function() {
     Screen.containerElement = container;
     container.innerHTML = '';
 
+    // Shows error and abandons execution
     if (!_checkBrowserRequirements()) return;
 
     Input.setMouseTarget(Screen.containerElement);
@@ -105,6 +110,8 @@ var _doRender = function() {
  */
 var _reset = function() {
     UIManager.clear();
+
+    Engine.pause();
 }
 
 /**
@@ -201,22 +208,21 @@ var _onResize = function() {
 var _checkBrowserRequirements = function() {
     var canvas = document.createElement('canvas');
     if (!canvas.getContext || !canvas.getContext('2d')) {
-        Engine.handleError('Your browser is not supported.<br>' + 
-        'Please upgrade your browser to a newer version, or use another one:<br>' + 
-        '- <a href="http://google.com/chrome">Get Chrome</a><br>' + 
-        '- <a href="http://firefox.com/">Get Firefox</a><br><br><br><br>');
+        _showBrowserNotSupportedError();
         return false;
     }
 
     if (typeof(global.localStorage) == 'undefined') {
-        Engine.handleError('Your browser is not supported.<br>' + 
-        'Please upgrade your browser to a newer version, or use another one:<br>' + 
-        '- <a href="http://google.com/chrome">Get Chrome</a><br>' + 
-        '- <a href="http://firefox.com/">Get Firefox</a><br><br><br><br>');
+        _showBrowserNotSupportedError();
         return false;
     }
 
     return true;
+}
+
+var _showBrowserNotSupportedError = function() {
+    Engine.handleError('This browser is not supported.<br>' + 
+        '<a href="http://browsehappy.com/">More info</a>');
 }
 
 /**
@@ -254,27 +260,31 @@ Engine.handleError = function(err, file, line, stack) {
     Screen.containerElement.innerHTML = '';
 
     var elem = document.createElement('div');
-    elem.className = 'error';
+    elem.style.margin = '30px 0 0 0';
+    elem.style.padding = '0 100px 0 100px';
 
-    elem.innerHTML = '<h1>:(</h1>';
+    var title = document.createElement('div');
+    title.innerHTML = '<h3>:(<br>Crash!</h3>';
+    title.style.fontSize = '42px';
+    title.style.textAlign = 'center';
+    title.style.fontWeight = 'normal';
+
+    elem.appendChild(title);
+
     if (stack == '') elem.innerHTML += err;
     if (file != '' && line != '') elem.innerHTML += '<br><br>' + file + ':' + line + '.'; 
     if (stack != '') elem.innerHTML += stack.replace(/\n/g, '<br>&nbsp;&nbsp;&nbsp;&nbsp;');
-    // elem.innerHTML += '<br><br>Press F5 to reload.';
+    elem.innerHTML += '<br><br><b>Try refreshing the page.</b><br><br><br><br>';
 
     Screen.containerElement.appendChild(elem);
 
     return;
 }
 
-// Check for <IE9 so that an error can by displayed with onerror if there is no canvas support
-if (global.addEventListener) {
-    global.addEventListener('load', _init);
+try {
     global.addEventListener('resize', _onResize);
-} else {
-    global.attachEvent('onload', function() {
-        _init();
-    });
+} catch(err) {
+    // Check for <IE9 so that an error can by displayed if there is no canvas support
 }
 
 global.Engine = Engine;

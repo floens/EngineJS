@@ -8,6 +8,7 @@ global.Canvas = function(width, height, zIndex) {
     this.canvas = document.createElement('canvas');
     this.canvas.width = width;
     this.canvas.height = height;
+    this.canvas.style.position = 'absolute';
     this.canvas.style.zIndex = zIndex;
     this.canvas.style.left = '0px';
     this.canvas.style.top = '0px';

@@ -6,7 +6,7 @@ global.Input = {};
 var _textForm = null;
 Input.putTextForm = function(x, y, w, h, defaultString, align) {
     if (_textForm != null) {
-        log('Input: There is already a textform.');
+        log('Input: There already is a textform.');
         return;
     }
     if (defaultString == undefined) defaultString = '';
@@ -15,12 +15,18 @@ Input.putTextForm = function(x, y, w, h, defaultString, align) {
     var elem = document.createElement('input');
     elem.setAttribute('type', 'text');
     elem.value = defaultString;
+    elem.style.position = 'absolute';
+    elem.style.margin = '0';
+    elem.style.padding = '0';
+    elem.style.border = '0';
+    elem.style.outline = '0';
     elem.style.zIndex = 200;
     elem.style.left = (x) + 'px';
     elem.style.top = (y) + 'px';
     elem.style.width = (w) + 'px';
     elem.style.height = (h) + 'px';
     elem.style.textAlign = align;
+    elem.style.fontSize = '18px';
     elem.spellcheck = false;
     elem.maxLength = 120;
 
