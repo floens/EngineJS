@@ -1,34 +1,24 @@
-==========
-= Todo:
-==========
-- Move to a component entity system - DONE!!! YEAH
-- System setLoopType(System.TICK_LOOP || System.RENDER_LOOP) - Done
+Todo
+----
 
-
-- System and component auto id and make id private - needs more figuring out
-
+Remove css
+Make grunt complete
+Separate dev and the engine
 
 
 
-==========
-= Uploading to the internet
-==========
-- Run "grunt" and copy the files in build/
-- Change protocolversion in MainServer to match that of MainClient
+Building
+--------
+
+Run "grunt"
 
 
-==========
-= Adding a file:
-==========
 
-Change Setup.js for client and server
-Add to grunt
+Adding a file
+-------------
+
+Add to Gruntfile.js
 
 
-==========
-= Browser required capabilities:
-==========
-    - Canvas (2d)
-    - WebSockets
 
 
