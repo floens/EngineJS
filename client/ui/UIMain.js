@@ -18,11 +18,9 @@ UIMain.prototype.tick = function() {
     // Singleplayer button
     this.singleplayerButton.update();
     if (this.singleplayerButton.getClicked()) {
-        Main.startSingleplayer();
-        return;
     }
 
-    if (this.singleplayerButton.isMouseOver()) {
+    if (this.singleplayerButton.getMouseOver()) {
         this.spOffset++;
         if (this.spOffset > 6) this.spOffset = 6;
     } else {
@@ -34,11 +32,9 @@ UIMain.prototype.tick = function() {
     // Multiplayer button
     this.multiplayerButton.update();
     if (this.multiplayerButton.getClicked()) {
-        UIManager.set(new UIMultiplayerSelect());
-        return;
     }
 
-    if (this.multiplayerButton.isMouseOver()) {
+    if (this.multiplayerButton.getMouseOver()) {
         this.mpOffset++;
         if (this.mpOffset > 6) this.mpOffset = 6;
     } else {

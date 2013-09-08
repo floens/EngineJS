@@ -3,59 +3,76 @@
 
 global.Input = {};
 
-var _textForm = null;
-Input.putTextForm = function(x, y, w, h, defaultString, align) {
-    if (_textForm != null) {
-        log('Input: There already is a textform.');
-        return;
-    }
+/**
+ * Create an text form at the given location.
+ * @param {number} x             
+ * @param {number} y             
+ * @param {number} width         
+ * @param {number} height        
+ * @param {string} defaultString What should be already filled in
+ * @param {string} textAlign     Alignment of the text inside the form
+ */
+global.InputTextform = function(x, y, width, height, defaultString, textAlign) {
     if (defaultString == undefined) defaultString = '';
-    if (align == undefined) align = 'center';
+    if (textAlign == undefined) textAlign = 'center';
 
-    var elem = document.createElement('input');
-    elem.setAttribute('type', 'text');
-    elem.value = defaultString;
-    elem.style.position = 'absolute';
-    elem.style.margin = '0';
-    elem.style.padding = '0';
-    elem.style.border = '0';
-    elem.style.outline = '0';
-    elem.style.zIndex = 200;
-    elem.style.left = (x) + 'px';
-    elem.style.top = (y) + 'px';
-    elem.style.width = (w) + 'px';
-    elem.style.height = (h) + 'px';
-    elem.style.textAlign = align;
-    elem.style.fontSize = '18px';
-    elem.spellcheck = false;
-    elem.maxLength = 120;
+    this.inputElement = this._createTextform(x, y, width, height, defaultString, textAlign);
 
-    Screen.containerElement.appendChild(elem);
-    _textForm = elem;
-
-    elem.focus();
+    Screen.containerElement.appendChild(this.inputElement);
 }
 
-Input.textFormActive = function() {
-    return _textForm != null;
+InputTextform.prototype._createTextform = function(x, y, width, height, defaultString, textAlign) {
+    var inputElement = document.createElement('input');
+    inputElement.setAttribute('type', 'text');
+    inputElement.value = defaultString;
+    inputElement.style.position = 'absolute';
+    inputElement.style.margin = '0';
+    inputElement.style.padding = '0';
+    inputElement.style.border = '0';
+    inputElement.style.outline = '0';
+    inputElement.style.zIndex = 200;
+    inputElement.style.left = (x) + 'px';
+    inputElement.style.top = (y) + 'px';
+    inputElement.style.width = (width) + 'px';
+    inputElement.style.height = (height) + 'px';
+    inputElement.style.textAlign = textAlign;
+    inputElement.style.fontSize = '18px';
+    inputElement.spellcheck = false;
+    inputElement.maxLength = 120;
+
+    inputElement.focus();
+
+    return inputElement;
 }
 
-Input.removeTextForm = function() {
-    if (_textForm == null) return;
-    Screen.containerElement.removeChild(_textForm);
-    _textForm = null;
+/**
+ * Move this text form around
+ * @param {number} x 
+ * @param {number} y 
+ */
+InputTextform.prototype.setPosition = function(x, y) {
+    this.inputElement.style.left = (x) + 'px';
+    this.inputElement.style.top = (y) + 'px';
 }
 
-Input.getTextFormValue = function() {
-    if (_textForm == null) return '';
-    return _textForm.value;
+/**
+ * Get the value of the form
+ * @return {string} 
+ */
+InputTextform.prototype.getValue = function() {
+    return this.inputElement.value;
 }
 
-Input.setTextFormPosition = function(x, y) {
-    if (_textForm == null) return;
-    _textForm.style.left = (x) + 'px';
-    _textForm.style.top = (y) + 'px';
+/**
+ * Remove this text form
+ */
+InputTextform.prototype.remove = function() {
+    Screen.containerElement.removeChild(this.inputElement);
 }
+
+
+
+
 
 
 var _pressedKeys = {},
@@ -92,9 +109,9 @@ var _onKeyDown = function(event) {
     var i = _keyCodes[event.keyCode];
     if (i == undefined) return;
 
-    if (_textForm == null && (i == 'left' || i == 'right' || i == 'up' || i == 'down') ) {
+    /*if (i == 'left' || i == 'right' || i == 'up' || i == 'down') {
         event.preventDefault();
-    }
+    }*/
 
     if (i == 'escape' || i == 'tab' || i == 'F10') {
         event.preventDefault();

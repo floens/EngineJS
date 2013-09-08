@@ -38,14 +38,14 @@ UIButton.prototype.setSize = function(size) {
 UIButton.prototype.render = function(c) {
     var x = this.align == 'center' ? this.x - c.measureText(this.text, this.size) / 2 : this.x;
 
-    if (this._getMouseOver()) {
+    if (this.getMouseOver()) {
         c.fillText(this.text, x, this.y, this.overlayColor, this.size);
     } else {
         c.fillText(this.text, x, this.y, this.color, this.size);
     }
 }
 
-UIButton.prototype._getMouseOver = function() {
+UIButton.prototype.getMouseOver = function() {
     var mx = Input.getMousePosition()[0],
         my = Input.getMousePosition()[1];
 
@@ -63,16 +63,16 @@ UIButton.prototype.getClicked = function() {
 }
 
 UIButton.prototype.update = function() {
-    this.mouseover = this._getMouseOver();
+    this.mouseover = this.getMouseOver();
 
     var down = this._getMousePressed();
     if (!this.wasDown && down) {
         this.wasDown = true;
-        if (this._getMouseOver()) {
+        if (this.getMouseOver()) {
             this.wasDownHere = true;
         }
     } else if (this.wasDown && !down) {
-        if (this.wasDownHere && this._getMouseOver()) {
+        if (this.wasDownHere && this.getMouseOver()) {
             this.pressed = true;
         }
         this.wasDown = false;

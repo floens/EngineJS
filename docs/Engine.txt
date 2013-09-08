@@ -1,9 +1,6 @@
 Todo
 ----
 
-Remove engine specific css - Done
-Make Input textform instancable
-
 Make grunt complete
 Separate dev and the engine
 

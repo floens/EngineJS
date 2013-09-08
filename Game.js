@@ -19,7 +19,7 @@ Engine.load(function() {
 var _worldManager;
 
 var start = function() {
-    UIManager.set(null);
+    UIManager.set(new UIMain());
 
     var world = new World();
     world.setRemote(false);
