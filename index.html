@@ -3,7 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <title>Engine</title>
-    <link rel="stylesheet" href="css/default.css">
+    <style type="text/css">
+    body {
+        margin: 0;
+        padding: 0;
+        background: #4e4e4e;
+    }
+
+    #gameContainer {
+        margin: 0 auto 0 auto;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+    }
+    </style>
     
     <script src="client/Setup.js"></script>
 
@@ -69,8 +82,8 @@
 
     <script src="client/EngineClient.js"></script>
 </head>
-<body id="body">
-    <div id="container"></div>
+<body>
+    <div id="gameContainer"></div>
 
     <script src="Game.js"></script>
 </body>

@@ -61,6 +61,10 @@ var _init = function() {
     var container = document.getElementById(_loadOptions.containerElement);
     if (!container) throw new Error('Initialize: Element with id ' + _loadOptions.containerElement + ' not found.');
 
+    container.style.backgroundColor = '#fff';
+    container.style.position = 'relative';
+    container.style.overflow = 'hidden';
+
     Screen.containerElement = container;
     container.innerHTML = '';
 

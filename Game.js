@@ -3,7 +3,7 @@
 
 
 Engine.setOptions({
-    containerElement: 'container'
+    containerElement: 'gameContainer'
 })
 
 
