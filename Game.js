@@ -51,7 +51,6 @@ var start = function() {
     var player = new EntityPlayer(world);
     player.addComponent(new ImageRenderComponent(AssetManager.getAsset('player'), 0, 0, 64, 96));
     player.addComponent(new ControllableComponent());
-    player.addComponent(new RemoteComponent());
     player.add();
 
     Engine.tick(tick);

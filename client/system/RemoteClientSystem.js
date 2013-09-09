@@ -9,9 +9,6 @@ global.RemoteClientSystem = function(url, packetHandler) {
         throw new Error('Second argument must be instance of PacketHandler.');
     }
 
-    this.addAspect(PositionComponent);
-    this.addAspect(RemoteComponent);
-
     this.connected = false;
     this.connection = null;
     this.netHandler = null;

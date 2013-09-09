@@ -206,7 +206,7 @@ var _onResize = function() {
     if (_maxWidth != null && Screen.width > _maxWidth) Screen.width = _maxWidth;
     if (_maxHeight != null && Screen.height > _maxHeight) Screen.height = _maxHeight;
 
-    // Rounding errors can be avoided by making the dimensions divisable by two
+    // Rounding errors can be avoided by making the dimensions divisible by two
     if (Screen.width % 2 != 0) Screen.width--;
     if (Screen.height % 2 != 0) Screen.height--;
 
