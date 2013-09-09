@@ -11,13 +11,20 @@
 
 var Engine = {};
 
-var _loadFunction = null,
-    _tickFunction = null,
-    _renderFunction = null,
-    _loadOptions = null,
-    _started = false,
-    _paused = false,
-    _debugOverlay = null;
+var _started = false;
+var _paused = false;
+var _debugOverlay = null;
+
+
+var _loadFunction = null;
+var _tickFunction = null;
+var _renderFunction = null;
+
+var _loadOptions = null;
+var _minWidth = 200;
+var _minHeight = 150;
+var _maxWidth = null;
+var _maxHeight = null;
 
 Engine.setOptions = function(options) {
     _loadOptions = options;
@@ -51,12 +58,19 @@ var _init = function() {
     if (_started == true) return;
     _started = true;
 
-    log('Initializing.');
+    // Shows error and abandons execution
+    if (!_checkBrowserRequirements()) return;
 
+    log('Initializing.');
 
     if (!_loadOptions || typeof(_loadOptions.containerElement) != 'string') {
         throw new Error('Initialize: Specify the container element id via optionsObject.containerElement in Engine.setOptions(optionsObject).');
     }
+
+    if (Utils.isNumber(_loadOptions.minWidth)) _minWidth = _loadOptions.minWidth;
+    if (Utils.isNumber(_loadOptions.minHeight)) _minHeight = _loadOptions.minHeight;
+    if (Utils.isNumber(_loadOptions.maxWidth)) _maxWidth = _loadOptions.maxWidth;
+    if (Utils.isNumber(_loadOptions.maxHeight)) _maxHeight = _loadOptions.maxHeight;
 
     var container = document.getElementById(_loadOptions.containerElement);
     if (!container) throw new Error('Initialize: Element with id ' + _loadOptions.containerElement + ' not found.');
@@ -67,9 +81,6 @@ var _init = function() {
 
     Screen.containerElement = container;
     container.innerHTML = '';
-
-    // Shows error and abandons execution
-    if (!_checkBrowserRequirements()) return;
 
     Input.setMouseTarget(Screen.containerElement);
 
@@ -190,10 +201,10 @@ var _onResize = function() {
     Screen.width = document.documentElement.clientWidth;
     Screen.height = document.documentElement.clientHeight;
     
-    if (Screen.width > 1200) Screen.width = 1200;
-    if (Screen.height > 600) Screen.height = 600;
-    if (Screen.width < 100) Screen.width = 100;
-    if (Screen.height < 100) Screen.height = 100;
+    if (Screen.width < _minWidth) Screen.width = _minWidth;
+    if (Screen.height < _minHeight) Screen.height = _minHeight;
+    if (_maxWidth != null && Screen.width > _maxWidth) Screen.width = _maxWidth;
+    if (_maxHeight != null && Screen.height > _maxHeight) Screen.height = _maxHeight;
 
     // Rounding errors can be avoided by making the dimensions divisable by two
     if (Screen.width % 2 != 0) Screen.width--;

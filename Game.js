@@ -3,7 +3,11 @@
 
 
 Engine.setOptions({
-    containerElement: 'gameContainer'
+    containerElement: 'gameContainer',
+    minWidth: 200,
+    minHeight: 200,
+    maxWidth: 1200,
+    maxHeight: 600
 })
 
 
