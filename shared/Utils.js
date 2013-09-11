@@ -50,7 +50,16 @@ log.ERROR = 2;
 var _doLog = function(e) {
     // Shared: browser may not have console
     if (global.console && global.console.log) {
-        global.console.log(e);
+        if (e instanceof Error) {
+            if (global.console.dir) {
+                global.console.dir(e);
+                if (e.stack) global.console.log(e.stack);
+            } else {
+                global.console.log(e);
+            }
+        } else {
+            global.console.log(e);
+        }
     }
 }
 

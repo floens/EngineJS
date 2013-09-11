@@ -7,9 +7,11 @@ global.PacketHandlerClient = function() {
 PacketHandlerClient.extend(PacketHandler);
 
 PacketHandlerClient.prototype.handlePacket = function(packet) {
-    if (packet instanceof HandshakePacket) {
-        log(packet, true);
-    }
+    log(packet, true);
+
+    // if (packet instanceof HandshakePacket) {
+    //     log(packet, true);
+    // }
 }
 
 })(global);

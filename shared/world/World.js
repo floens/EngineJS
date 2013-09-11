@@ -81,11 +81,12 @@ World.prototype.getSystem = function(system) {
 World.prototype.addEntity = function(entity) {
     if (!(entity instanceof Entity)) throw new Error('Not an Entity.');
     this.entities.push(entity);
-    entity.setSessionId(++this.sessionIdCounter);
 
-    if (entity.sessionId >= 0) {
-        this.entitySessionIdMap.set(entity.sessionId, entity);
+    if (entity.sessionId < 0) {
+        entity.setSessionId(++this.sessionIdCounter);
     }
+
+    this.entitySessionIdMap.set(entity.sessionId, entity);
 
     for (var i = 0; i < this.systems.length; i++) {
         this.systems[i].addEntity(entity);

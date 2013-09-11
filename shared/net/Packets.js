@@ -25,11 +25,17 @@ CreateEntityPacket.extend(Packet);
 Packet.registerPacket(CreateEntityPacket, 2, false, true);
 
 CreateEntityPacket.prototype.read = function(dataStream) {
-    
+    var entityId = dataStream.readNumber();
+
+    var entity = Entity.getEntityClass(entityId);
+
+    log(entity, true);
 }
 
 CreateEntityPacket.prototype.write = function(dataStream) {
-    
+    if (this.entity == null) throw new Error('Entity null.');
+
+    dataStream.writeNumber(this.entity.id);
 }
 
 CreateEntityPacket.prototype.setEntity = function(e) {

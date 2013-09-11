@@ -1,8 +1,10 @@
 Todo
 ----
 
-Make grunt complete
-Separate dev and the engine
+
+
+
+Separate dev and the engine - Too much work, doing that later. Windows has no symbolic links...
 
 
 

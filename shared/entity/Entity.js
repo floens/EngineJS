@@ -40,6 +40,10 @@ Entity.prototype.getComponent = function(component) {
     return value;
 }
 
+Entity.prototype.toString = function() {
+    return '[object Entity]';
+}
+
 // Static functions
 var _registeredEntities = new Map();
 Entity.registerEntity = function(entity, id) {
@@ -53,5 +57,12 @@ Entity.registerEntity = function(entity, id) {
     entity.id = id;
 }
 
+Entity.getEntityClass = function(id) {
+    if (_registeredEntities.has(id)) {
+        return _registeredEntities.get(id);
+    } else {
+        throw new Error('Entity with id (' + id + ') not registered.');
+    }
+}
 
 })(global);

@@ -32,11 +32,17 @@ var tick = function() {
     world.tick();
 }
 
-global._sendPacket = function() {
+global.sendPacket = function() {
     var remoteSystem = _world.getSystem(RemoteServerSystem);
 
     if (remoteSystem.connections.length > 0) {
-        remoteSystem.connections[0].netHandler.writeConnection(new CreateEntityPacket(_entity));
+        var packet = new CreateEntityPacket();
+        packet.setEntity(_entity);
+
+        log('Sending:');
+        log(packet, true);
+
+        remoteSystem.connections[0].netHandler.writeConnection(packet);
     }
 }
 
