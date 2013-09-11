@@ -3,7 +3,7 @@
 
 // require('./build/server/Engine.js');
 
-// For debuggin
+// For debugging
 require('../server/Setup.js');
 require('../server/EngineServer.js');
 require('../shared/Utils.js');
