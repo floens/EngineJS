@@ -1,12 +1,7 @@
 (function(global, undefined) {
 'use strict';
 
-require('./server/EngineServer.js');
-
-Engine.setOptions({
-    port: 8080,
-    maxConnections: 32
-})
+require('./build/server/Engine.js');
 
 Engine.load(function() {
     log('Loaded!');
@@ -46,7 +41,6 @@ global._sendPacket = function() {
 }
 
 
-// TODO
 Engine.init();
 
 require('repl').start('>');

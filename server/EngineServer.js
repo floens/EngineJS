@@ -9,7 +9,6 @@
  *             /____/               
  */
 
-require('./Setup.js');
 
 var Engine = {};
 
