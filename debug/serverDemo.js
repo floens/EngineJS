@@ -68,9 +68,6 @@ global.sendPacket = function() {
         var packet = new CreateEntityPacket();
         packet.setEntity(_entity);
 
-        log('Sending:');
-        log(packet, true);
-
         remoteSystem.connections[0].netHandler.writeConnection(packet);
     }
 }

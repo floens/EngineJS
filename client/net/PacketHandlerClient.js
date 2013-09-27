@@ -1,17 +1,21 @@
 (function(global, undefined) {
 'use strict';
 
-global.PacketHandlerClient = function() {
-
+global.PacketHandlerClient = function(world) {
+    this.world = world;
 }
 PacketHandlerClient.extend(PacketHandler);
 
 PacketHandlerClient.prototype.handlePacket = function(packet) {
-    log(packet, true);
+    switch(packet.id) {
+        case CreateEntityPacket.id:
+            var entity = new packet.entity(this.world);
 
-    // if (packet instanceof HandshakePacket) {
-    //     log(packet, true);
-    // }
+            entity.add();
+            log(entity, true);
+
+            break;
+    }
 }
 
 })(global);

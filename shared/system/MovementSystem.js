@@ -25,6 +25,16 @@ MovementSystem.prototype.tick = function() {
 }
 
 MovementSystem.prototype.processEntity = function(entity) {
+    var position = entity.getComponent(PositionComponent);
+
+    position.xa *= 0.97;
+    position.ya *= 0.97;
+
+    position.x += position.xa;
+    position.y += position.ya;
+}
+
+MovementSystem.prototype.processEntityCollisionTest = function(entity) {
     var position = entity.getComponent(PositionComponent),
         collidable = entity.getComponent(CollidableComponent),
         selfBB = collidable.getBB();

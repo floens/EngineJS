@@ -2,12 +2,6 @@
 'use strict';
 
 global.System = function() {
-    /**
-     * Is this system on the tick or render loop
-     * True if on tick loop
-     * False if on render loop
-     * @type {Boolean}
-     */
     this._loopType = System.TICK_LOOP;
 
     this.aspects = [];

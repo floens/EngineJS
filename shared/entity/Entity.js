@@ -46,15 +46,15 @@ Entity.prototype.toString = function() {
 
 // Static functions
 var _registeredEntities = new Map();
-Entity.registerEntity = function(entity, id) {
+Entity.registerEntity = function(entityClass, id) {
     if (!Utils.isNumber(id)) throw new Error('Id not a number.');
     if (id <= 0) throw new Error('Invalid argument: Id below 1 reserved.');
     if (_registeredEntities.has(id)) {
         throw new Error('Entity with id already registered (' + id + ')');
     }
-    _registeredEntities.set(id, true);
-    entity.prototype.id = id;
-    entity.id = id;
+    _registeredEntities.set(id, entityClass);
+    entityClass.prototype.id = id;
+    entityClass.id = id;
 }
 
 Entity.getEntityClass = function(id) {

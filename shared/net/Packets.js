@@ -27,9 +27,7 @@ Packet.registerPacket(CreateEntityPacket, 2, false, true);
 CreateEntityPacket.prototype.read = function(dataStream) {
     var entityId = dataStream.readNumber();
 
-    var entity = Entity.getEntityClass(entityId);
-
-    log(entity, true);
+    this.entity = Entity.getEntityClass(entityId);
 }
 
 CreateEntityPacket.prototype.write = function(dataStream) {
