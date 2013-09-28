@@ -2,6 +2,10 @@
 'use strict';
 
 global.Storage = {};
+Storage.getSupport = function() {
+    return localStorage != undefined;
+}
+
 Storage.get = function(key) {
     return localStorage.getItem(key);
 }

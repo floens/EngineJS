@@ -1,7 +1,6 @@
 (function(global, undefined) {
 'use strict';
 
-
 Engine.setOptions({
     containerElement: 'gameContainer',
     minWidth: 200,
@@ -12,6 +11,11 @@ Engine.setOptions({
 
 
 Engine.load(function() {
+    if (!RemoteClientSystem.getWebSocketSupport()) {
+        UIManager.set(new UIText('This browser does not support multiplayer :('));
+        return;
+    }
+
     UIManager.set(new UILoad(start));
 
     AssetManager.load('res/EntityPlayer.png', 'player', {
@@ -19,11 +23,10 @@ Engine.load(function() {
     });
 })
 
-
-var _worldManager;
+var _world;
 
 var start = function() {
-    UIManager.set(new UIMain());
+    UIManager.set(null);
 
     var world = new World();
     world.setRemote(false);
@@ -39,10 +42,8 @@ var start = function() {
 
     world.addSystem(remoteSystem);
 
-    _worldManager = new WorldManager();
-    _worldManager.setWorld(world);
-
-    global.worldManager = _worldManager;
+    _world = world;
+    global.world = world;
 
     // var box = new EntityBox(world, 64, 64);
     // box.add();
@@ -65,11 +66,11 @@ var start = function() {
 }
 
 var tick = function() {
-    _worldManager.tick();
+    _world.tick();
 }
 
 var render = function() {
-    _worldManager.render();
+    _world.render();
 }
 
 

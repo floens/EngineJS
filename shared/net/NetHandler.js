@@ -34,10 +34,11 @@ NetHandler.prototype.tick = function() {
     this.tickCount++;
 }
 
-NetHandler.prototype.disconnect = function() {
+NetHandler.prototype.disconnect = function(reason) {
     this.connected = false;
 
     try {
+        this.writeConnection(new DisconnectPacket(reason == undefined ? '' : reason))
         this.connection.close();
     } catch(err) {
         log('Error closing connection.');

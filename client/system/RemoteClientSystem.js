@@ -22,18 +22,14 @@ RemoteClientSystem.prototype.tick = function() {
 
     if (this.connected) {
         this.netHandler.tick();
+        this.packetHandler.tick();
     }
 }
 
 RemoteClientSystem.prototype.connect = function(url) {
-    if (!this.checkWebSocketSupport()) {
-        UIManager.set(new UIBack('This browser doesn\'t support multiplayer.', function() {
-            UIManager.set(null);
-        }))
-        return;
+    if (!RemoteClientSystem.getWebSocketSupport()) {
+        throw new Error('This browser does not support multiplayer.');
     }
-
-    UIManager.set(new UIText('Connecting...'));
 
     this.startConnection(url);
 }
@@ -41,13 +37,12 @@ RemoteClientSystem.prototype.connect = function(url) {
 RemoteClientSystem.prototype.startConnection = function(url) {
     var connection = this.connection = new WebSocket(url);
 
+    this.packetHandler = this.packetHandlerFactoryFunction();
+
     var self = this;
     connection.onopen = function(event) {
-        UIManager.set(new UIText('Connected.'));
-
         self.connected = true;
         self.netHandler = new NetHandler(connection, self);
-        self.packetHandler = self.packetHandlerFactoryFunction();
         self.packetHandler.setNetHandler(self.netHandler);
 
         self.packetHandler.onConnect();
@@ -99,18 +94,14 @@ RemoteClientSystem.prototype.startConnection = function(url) {
                 text = 'Internal connection error.';
                 break;
         }
-
-        UIManager.set(new UIBack(text, function() {
-            UIManager.set(null);
-        }));
     }
 
     connection.onerror = function(event) {
         log('Connection error.');
-
-        UIManager.set(new UIBack('Connection error.', function() {
-            UIManager.set(null);
-        }));
+        self.packetHandler.onError();
+        self.packetHandler = null;
+        self.connected = false;
+        self.connection = null;
     }
 }
 
@@ -119,9 +110,11 @@ RemoteClientSystem.prototype.getHandler = function() {
     return this.netHandler;
 }
 
-// TODO move to main
-RemoteClientSystem.prototype.checkWebSocketSupport = function() {
+// Static functions
+RemoteClientSystem.getWebSocketSupport = function() {
     return global.WebSocket != undefined;
 }
+
+
 
 })(global);

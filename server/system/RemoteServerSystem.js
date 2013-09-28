@@ -7,9 +7,6 @@ global.RemoteServerSystem = function(port, maxConnections, packetHandlerFactoryF
     if (!Utils.isNumber(port)) throw new Error('First argument must be the port to listen on.');
     if (!Utils.isNumber(maxConnections)) throw new Error('Second argument must be max connections.');
 
-    this.addAspect(PositionComponent);
-    this.addAspect(RemoteComponent);
-
     this.port = port;
     this.maxConnections = maxConnections;
     this.packetHandlerFactoryFunction = packetHandlerFactoryFunction;
@@ -25,7 +22,9 @@ RemoteServerSystem.prototype.tick = function() {
     this.parent.tick.call(this);
 
     for (var i = 0; i < this.connections.length; i++) {
-        this.connections[i].netHandler.tick();
+        var connection = this.connections[i];
+        connection.netHandler.tick();
+        connection.packetHandler.tick();
     }
 }
 
@@ -51,7 +50,7 @@ RemoteServerSystem.prototype.startServer = function(httpServer) {
         connection.packetHandler.setNetHandler(connection.netHandler);
 
         if (self.connections.length >= self.maxConnections) {
-            connection.netHandler.disconnect('Server full!');
+            connection.netHandler.disconnect('Server full');
             log('Peer ' + connection.remoteAddress + ' was kicked because the server is full.');
             return;
         }
