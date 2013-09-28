@@ -11,10 +11,10 @@ global.UILoad = function(callback) {
     this.callback = callback;
     this.done = false;
 }
-UILoad.prototype = Object.create(UI.prototype);
+UILoad.extend(UI);
 
 UILoad.prototype.tick = function() {
-    UI.prototype.tick.call(this);
+    this.parent.tick.call(this);
 
     this.done = AssetManager.progress.isDone();
 
@@ -24,7 +24,7 @@ UILoad.prototype.tick = function() {
 }
 
 UILoad.prototype.render = function() {
-    UI.prototype.render.call(this);
+    this.parent.render.call(this);
 
     this.canvas.clear();
 

@@ -11,10 +11,10 @@ global.UIText = function(text, color) {
     this.displayText = text;
     this.color = color == undefined ? '#000' : color;
 }
-UIText.prototype = Object.create(UI.prototype);
+UIText.extend(UI);
 
 UIText.prototype.render = function() {
-    UI.prototype.render.call(this);
+    this.parent.render.call(this);
 
     this.canvas.clear();
 

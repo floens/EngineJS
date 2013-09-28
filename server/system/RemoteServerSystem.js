@@ -1,14 +1,18 @@
 (function(global, undefined) {
 'use strict';
 
-global.RemoteServerSystem = function(port, maxConnections) {
+global.RemoteServerSystem = function(port, maxConnections, packetHandlerFactoryFunction) {
     System.call(this);
+
+    if (!Utils.isNumber(port)) throw new Error('First argument must be the port to listen on.');
+    if (!Utils.isNumber(maxConnections)) throw new Error('Second argument must be max connections.');
 
     this.addAspect(PositionComponent);
     this.addAspect(RemoteComponent);
 
     this.port = port;
     this.maxConnections = maxConnections;
+    this.packetHandlerFactoryFunction = packetHandlerFactoryFunction;
 
     this.connections = [];
 
@@ -23,11 +27,6 @@ RemoteServerSystem.prototype.tick = function() {
     for (var i = 0; i < this.connections.length; i++) {
         this.connections[i].netHandler.tick();
     }
-}
-
-RemoteServerSystem.prototype.handlePacket = function(packet) {
-    log('Received a packet!');
-    log(packet, true);
 }
 
 RemoteServerSystem.prototype.startServer = function(httpServer) {
@@ -48,6 +47,8 @@ RemoteServerSystem.prototype.startServer = function(httpServer) {
         var connection = req.accept(null, req.origin);
 
         connection.netHandler = new NetHandler(connection);
+        connection.packetHandler = self.packetHandlerFactoryFunction();
+        connection.packetHandler.setNetHandler(connection.netHandler);
 
         if (self.connections.length >= self.maxConnections) {
             connection.netHandler.disconnect('Server full!');
@@ -63,7 +64,7 @@ RemoteServerSystem.prototype.startServer = function(httpServer) {
                 var packet = connection.netHandler.readConnection(message.utf8Data);
 
                 if (packet != null) {
-                    self.handlePacket(packet);
+                    connection.packetHandler.handlePacket(packet);
                 }
             }
         })
@@ -71,9 +72,12 @@ RemoteServerSystem.prototype.startServer = function(httpServer) {
         connection.on('close', function(reasonCode, description) {
             log('Peer disconnected [' + connection.remoteAddress + ']');
 
+            connection.packetHandler.onDisconnect();
             connection.netHandler.disconnect();
             self.connections.remove(connection);
         })
+
+        connection.packetHandler.onConnect();
     })
 }
 

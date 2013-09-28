@@ -14,16 +14,16 @@ global.UIBack = function(text, callback) {
 
     this.returnButton = new UIButton('Return', this.w / 2, this.h / 2 + 20, 50, 25);
 }
-UIBack.prototype = Object.create(UI.prototype);
+UIBack.extend(UI);
 UIBack.prototype.onResize = function() {
-    UI.prototype.onResize.call(this);
+    this.parent.onResize.call(this);
 
     this.returnButton.x = this.w / 2;
     this.returnButton.y = this.h / 2 + 20;
 }
 
 UIBack.prototype.render = function() {
-    UI.prototype.render.call(this);
+    this.parent.render.call(this);
 
     this.canvas.clear();
 
@@ -33,7 +33,7 @@ UIBack.prototype.render = function() {
 }
 
 UIBack.prototype.tick = function() {
-    UI.prototype.tick.call(this);
+    this.parent.tick.call(this);
 
     this.returnButton.update();
     if (this.returnButton.getClicked()) {

@@ -1,18 +1,16 @@
 (function(global, undefined) {
 'use strict';
 
-global.RemoteClientSystem = function(url, packetHandler) {
+global.RemoteClientSystem = function(url, packetHandlerFactoryFunction) {
     System.call(this);
 
     if (!Utils.isString(url)) throw new Error('First argument must be url to connect to.');
-    if (!(packetHandler instanceof PacketHandler)) {
-        throw new Error('Second argument must be instance of PacketHandler.');
-    }
 
     this.connected = false;
     this.connection = null;
     this.netHandler = null;
-    this.packetHandler = packetHandler;
+    this.packetHandlerFactoryFunction = packetHandlerFactoryFunction;
+    this.packetHandler = null;
 
     this.connect(url);
 }
@@ -25,14 +23,6 @@ RemoteClientSystem.prototype.tick = function() {
     if (this.connected) {
         this.netHandler.tick();
     }
-}
-
-RemoteClientSystem.prototype.handlePacket = function(packet) {
-    this.packetHandler.handlePacket(packet);
-}
-
-RemoteClientSystem.prototype.sendPacket = function(packet) {
-    this.netHandler.writeConnection(packet);
 }
 
 RemoteClientSystem.prototype.connect = function(url) {
@@ -57,9 +47,10 @@ RemoteClientSystem.prototype.startConnection = function(url) {
 
         self.connected = true;
         self.netHandler = new NetHandler(connection, self);
+        self.packetHandler = self.packetHandlerFactoryFunction();
+        self.packetHandler.setNetHandler(self.netHandler);
 
-        // TODO DEBUG
-        self.sendPacket(new HandshakePacket('Message!'));
+        self.packetHandler.onConnect();
     }
 
     connection.onmessage = function(event) {
@@ -68,7 +59,7 @@ RemoteClientSystem.prototype.startConnection = function(url) {
         var packet = self.netHandler.readConnection(event.data);
 
         if (packet != null) {
-            self.handlePacket(packet);
+            self.packetHandler.handlePacket(packet);
         }
     }
 
@@ -80,6 +71,8 @@ RemoteClientSystem.prototype.startConnection = function(url) {
         self.connected = false;
         self.netHandler.disconnect();
         self.netHandler = null;
+        self.packetHandler.onDisconnect();
+        self.packetHandler = null;
         self.connection = null;
         connection = null;
 

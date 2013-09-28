@@ -10,10 +10,10 @@ global.UIMain = function() {
     this.multiplayerButton = new UIButton('Multiplayer', this.w / 2 + 60, this.h - 100, 100, 30);
     this.mpOffset = 0;
 }
-UIMain.prototype = Object.create(UI.prototype);
+UIMain.extend(UI);
 
 UIMain.prototype.tick = function() {
-    UI.prototype.tick.call(this);
+    this.parent.tick.call(this);
 
     // Singleplayer button
     this.singleplayerButton.update();
@@ -45,14 +45,14 @@ UIMain.prototype.tick = function() {
 }
 
 UIMain.prototype.onResize = function() {
-    UI.prototype.onResize.call(this);
+    this.parent.onResize.call(this);
 
     this.singleplayerButton.x = this.w / 2 - 60;
     this.multiplayerButton.x = this.w / 2 + 60;
 }
 
 UIMain.prototype.render = function() {
-    UI.prototype.render.call(this);
+    this.parent.render.call(this);
 
     var c = this.canvas;
     c.clear();

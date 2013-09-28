@@ -30,7 +30,14 @@ var start = function() {
     world.addSystem(new MovementSystem());
     world.addSystem(new RenderSystem());
     world.addSystem(new InputSystem());
-    world.addSystem(new RemoteClientSystem('ws://localhost:8080', new PacketHandlerClient(world)));
+
+    var remoteSystem = new RemoteClientSystem('ws://localhost:8080', function() {
+        var packetHandler = new PacketHandlerClient();
+        packetHandler.setWorld(world);
+        return packetHandler;
+    });
+
+    world.addSystem(remoteSystem);
 
     _worldManager = new WorldManager();
     _worldManager.setWorld(world);

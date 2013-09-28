@@ -76,7 +76,8 @@ module.exports = function(grunt) {
 
         'server/system/RemoteServerSystem.js',
         'server/net/EntityTracker.js',
-        'server/net/EntityTrackerEntry.js'
+        'server/net/EntityTrackerEntry.js',
+        'server/net/PacketHandlerClient.js'
     ];
 
     var packageJson = grunt.file.readJSON('package.json');

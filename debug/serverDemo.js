@@ -31,6 +31,7 @@ require('../shared/net/PacketHandler.js');
 require('../server/system/RemoteServerSystem.js');
 require('../server/net/EntityTracker.js');
 require('../server/net/EntityTrackerEntry.js');
+require('../server/net/PacketHandlerServer.js');
 
 Engine.load(function() {
     log('Loaded!');
@@ -45,7 +46,14 @@ var start = function() {
     var world = new World();
     world.setRemote(false);
     world.addSystem(new MovementSystem());
-    world.addSystem(new RemoteServerSystem(8080, 32));
+
+    var remoteSystem = new RemoteServerSystem(8080, 32, function() {
+        var packetHandler = new PacketHandlerServer();
+        packetHandler.setWorld(world);
+        return packetHandler;
+    });
+
+    world.addSystem(remoteSystem);
 
     // Debug
     _world = world;
@@ -60,18 +68,6 @@ var start = function() {
 var tick = function() {
     world.tick();
 }
-
-global.sendPacket = function() {
-    var remoteSystem = _world.getSystem(RemoteServerSystem);
-
-    if (remoteSystem.connections.length > 0) {
-        var packet = new CreateEntityPacket();
-        packet.setEntity(_entity);
-
-        remoteSystem.connections[0].netHandler.writeConnection(packet);
-    }
-}
-
 
 Engine.init();
 
