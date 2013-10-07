@@ -86,7 +86,7 @@ var _init = function() {
     Input.setMouseTarget(Screen.containerElement);
 
     if (_debug) {
-        _debugOverlay = new Canvas(200, 120, 100);
+        _debugOverlay = new Canvas(60, 40, 100);
     }
 
     // Resize container
@@ -166,8 +166,9 @@ var _doFps = function() {
     if (_debug) {
         var debugCanvas = _debugOverlay;
         debugCanvas.clear();
-        debugCanvas.fillText(_fpsFramesTotal + ' fps', 15, 15, '#000', 12);
-        debugCanvas.fillText(_fpsRenderTime.toFixed(1) + ' ms', 15, 30, '#000', 12);
+        debugCanvas.fillRect(0, 0, debugCanvas.width, debugCanvas.height, '#fff');
+        debugCanvas.fillText(_fpsFramesTotal + ' fps', 5, 5, '#000', 12);
+        debugCanvas.fillText(_fpsRenderTime.toFixed(1) + ' ms', 5, 20, '#000', 12);
     }
 }
 

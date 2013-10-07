@@ -9,20 +9,39 @@ global.System = function() {
     this.entities = [];
 }
 
-System.prototype.addEntity = function(entity) {
+System.prototype._tryAddEntity = function(entity) {
     if (this.interested(entity)) {
         this.entities.push(entity);
+        
+        this.addEntity(entity);
     }
 }
 
-System.prototype.removeEntity = function(entity) {
+System.prototype._tryRemoveEntity = function(entity) {
     for (var i = 0; i < this.entities.length; i++) {
-        if (this.entities[i].id == entity.id) {
+        if (this.entities[i].sessionId == entity.sessionId) {
             this.entities.splice(i, 1);
+
+            this.removeEntity(entity);
+
             return true;
         }
     }
     return false;
+}
+
+/**
+ * To be overriden
+ * @param {Entity} entity
+ */
+System.prototype.addEntity = function(entity) {
+}
+
+/**
+ * To be overridden
+ * @param  {Entity} entity 
+ */
+System.prototype.removeEntity = function(entity) {
 }
 
 System.prototype.addAspect = function(aspect) {

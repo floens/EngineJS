@@ -89,7 +89,7 @@ World.prototype.addEntity = function(entity) {
     this.entitySessionIdMap.set(entity.sessionId, entity);
 
     for (var i = 0; i < this.systems.length; i++) {
-        this.systems[i].addEntity(entity);
+        this.systems[i]._tryAddEntity(entity);
     }
 }
 
@@ -98,16 +98,16 @@ World.prototype.removeEntities = function() {
         if (this.entities[i].removed) {
             var entity = this.entities[i];
 
-            for (var j = 0; j < this.systems.length; j++) {
-                this.systems[j].removeEntity(entity);
-            }
-
             if (entity.sessionId >= 0) {
                 this.entitySessionIdMap.remove(entity.sessionId);
             }
 
             this.entities.splice(i, 1);
             i--;
+
+            for (var j = 0; j < this.systems.length; j++) {
+                this.systems[j]._tryRemoveEntity(entity);
+            }
         }
     }
 }
