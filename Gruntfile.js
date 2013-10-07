@@ -76,8 +76,8 @@ module.exports = function(grunt) {
             },
             build: {
                 files: {
-                    'build/client/Engine.js': 'build/tmp/clientConcat.js',
-                    'build/server/Engine.js': 'build/tmp/serverConcat.js'
+                    'build/EngineClient.js': 'build/tmp/clientConcat.js',
+                    'build/EngineServer.js': 'build/tmp/serverConcat.js'
                 }
             }
         }

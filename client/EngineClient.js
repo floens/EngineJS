@@ -25,6 +25,7 @@ var _minWidth = 200;
 var _minHeight = 150;
 var _maxWidth = null;
 var _maxHeight = null;
+var _debug = false;
 
 Engine.setOptions = function(options) {
     _loadOptions = options;
@@ -71,11 +72,11 @@ var _init = function() {
     if (Utils.isNumber(_loadOptions.minHeight)) _minHeight = _loadOptions.minHeight;
     if (Utils.isNumber(_loadOptions.maxWidth)) _maxWidth = _loadOptions.maxWidth;
     if (Utils.isNumber(_loadOptions.maxHeight)) _maxHeight = _loadOptions.maxHeight;
+    if (_loadOptions.debug) _debug = true;
 
     var container = document.getElementById(_loadOptions.containerElement);
     if (!container) throw new Error('Initialize: Element with id ' + _loadOptions.containerElement + ' not found.');
 
-    container.style.backgroundColor = '#fff';
     container.style.position = 'relative';
     container.style.overflow = 'hidden';
 
@@ -84,7 +85,9 @@ var _init = function() {
 
     Input.setMouseTarget(Screen.containerElement);
 
-    _debugOverlay = new Canvas(200, 120, 100);
+    if (_debug) {
+        _debugOverlay = new Canvas(200, 120, 100);
+    }
 
     // Resize container
     _onResize();
@@ -160,10 +163,12 @@ var _doFps = function() {
         _fpsFrames = 0;
     }
 
-    var debugCanvas = _debugOverlay;
-    debugCanvas.clear();
-    debugCanvas.fillText(_fpsFramesTotal + ' fps', 15, 15, '#000', 12);
-    debugCanvas.fillText(_fpsRenderTime.toFixed(1) + ' ms', 15, 30, '#000', 12);
+    if (_debug) {
+        var debugCanvas = _debugOverlay;
+        debugCanvas.clear();
+        debugCanvas.fillText(_fpsFramesTotal + ' fps', 15, 15, '#000', 12);
+        debugCanvas.fillText(_fpsRenderTime.toFixed(1) + ' ms', 15, 30, '#000', 12);
+    }
 }
 
 /**
