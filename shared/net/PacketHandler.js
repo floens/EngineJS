@@ -18,7 +18,7 @@ PacketHandler.prototype.tick = function() {
 }
 
 PacketHandler.prototype.handlePacket = function(packet) {
-    throw new Error('PacketHandler::handlePacket(packet) should be implemented.');
+    throw new Error('PacketHandler::handlePacket(packet) is abstract.');
 }
 
 PacketHandler.prototype.sendPacket = function(packet) {

@@ -190,7 +190,6 @@ global.Vec3 = function(x, y, z) {
 
 Function.prototype.extend = function(object) {
     this.prototype = Object.create(object.prototype);
-    // this.prototype.constructor = object;
     this.prototype.parent = object.prototype;
     return this;
 }

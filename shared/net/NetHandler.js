@@ -63,7 +63,7 @@ NetHandler.prototype.readConnection = function(data) {
     var packet = null;
     try {
         dataStream.setData(data);
-        packet = Packet.readStream(dataStream, true);
+        packet = Packet.readStream(dataStream, CLIENT);
     } catch(err) {
         log(err, true);
         return null;
@@ -78,6 +78,8 @@ NetHandler.prototype.readConnection = function(data) {
  * @param  {Packet} packet the packet to write
  */
 NetHandler.prototype.writeConnection = function(packet) {
+    if (!this.connected) return;
+
     var stream = null;
     try {
         stream = Packet.writeStream(packet);

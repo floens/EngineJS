@@ -5,11 +5,11 @@ global.Packet = function() {
 }
 
 Packet.prototype.read = function(dataStream) {
-    throw new Error('Packet::read(dataStream) should be implemented.');
+    throw new Error('Packet::read(dataStream) is abstract.');
 }
 
 Packet.prototype.write = function(dataStream) {
-    throw new Error('Packet::write(dataStream) should be implemented');
+    throw new Error('Packet::write(dataStream) is abstract');
 }
 
 

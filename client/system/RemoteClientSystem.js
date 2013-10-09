@@ -98,10 +98,14 @@ RemoteClientSystem.prototype.startConnection = function(url) {
 
     connection.onerror = function(event) {
         log('Connection error.');
-        self.packetHandler.onError();
-        self.packetHandler = null;
+        
         self.connected = false;
+        self.netHandler.disconnect();
+        self.netHandler = null;
+        self.packetHandler.onDisconnect();
+        self.packetHandler = null;
         self.connection = null;
+        connection = null;
     }
 }
 

@@ -17,9 +17,17 @@ Component.registerComponent = function(component, id) {
     if (_registeredComponents.has(id)) {
         throw new Error('Component with id already registered (' + id + ')');
     }
-    _registeredComponents.set(id, true);
+    _registeredComponents.set(id, component);
     component.prototype.id = id;
     component.id = id;
+}
+
+Component.getComponentClass = function(id) {
+    if (_registeredComponents.has(id)) {
+        return _registeredComponents.get(id);
+    } else {
+        throw new Error('Component with id (' + id + ') not registered.');
+    }
 }
 
 })(global);
