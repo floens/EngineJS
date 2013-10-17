@@ -57,4 +57,11 @@ RemoteComponent.prototype.setUpdateInterval = function(e) {
     this.updateInterval = e;
 }
 
+/**
+ * Called when the TrackerSystem has send this data to all the clients
+ */
+RemoteComponent.prototype.onBroadcast = function() {
+    
+}
+
 })(global);

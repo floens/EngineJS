@@ -15,7 +15,7 @@ global.RemoteClientSystem = function(url, packetHandlerFactoryFunction) {
     this.connect(url);
 }
 RemoteClientSystem.extend(System);
-System.registerSystem(RemoteClientSystem, 5);
+System.registerSystem(RemoteClientSystem, 1);
 
 RemoteClientSystem.prototype.tick = function() {
     this.parent.tick.call(this);
@@ -100,10 +100,15 @@ RemoteClientSystem.prototype.startConnection = function(url) {
         log('Connection error.');
         
         self.connected = false;
-        self.netHandler.disconnect();
-        self.netHandler = null;
-        self.packetHandler.onDisconnect();
-        self.packetHandler = null;
+        if (self.netHandler != null) {
+            self.netHandler.disconnect();
+            self.netHandler = null;
+        }
+        
+        if (self.packetHandler != null) {
+            self.packetHandler.onDisconnect();
+            self.packetHandler = null;
+        }
         self.connection = null;
         connection = null;
     }

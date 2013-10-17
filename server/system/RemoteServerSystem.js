@@ -16,7 +16,7 @@ global.RemoteServerSystem = function(port, maxConnections, packetHandlerFactoryF
     this.startHTTPServer();
 }
 RemoteServerSystem.extend(System);
-System.registerSystem(RemoteServerSystem, 6);
+System.registerSystem(RemoteServerSystem, 2);
 
 RemoteServerSystem.prototype.tick = function() {
     this.parent.tick.call(this);

@@ -95,6 +95,19 @@ Canvas.prototype.fillImage = function(image, dx, dy, sx, sy, w, h, flipX, flipY,
     if (rotate != undefined) {
         c.restore();
     }
+
+    return true;
+}
+
+Canvas.prototype.fillImageStretch = function(image, dx, dy, dw, dh, sx, sy, sw, sh) {
+    if (dx + dw < 0 || dy + dh < 0 || dx > this.width || dy > this.height) return false;
+
+    dx = Math.floor(dx);
+    dy = Math.floor(dy);
+    
+    this.c.drawImage(image, sx, sy, sw, sh, dx, dy, dw, dh);
+
+    return true;
 }
 
 Canvas.prototype.fillLine = function(sx, sy, dx, dy, color, width, secondColor) {

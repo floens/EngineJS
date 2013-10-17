@@ -9,7 +9,7 @@ require('../shared/entity/Entity.js');
 require('../shared/component/Component.js');
 require('../shared/component/PositionComponent.js');
 require('../shared/component/RemoteComponent.js');
-require('../shared/component/RemotePositionComponent.js');
+require('../shared/component/PacketHandlerComponent.js');
 require('../shared/system/System.js');
 require('../shared/net/Packet.js');
 require('../shared/net/DataStream.js');
@@ -17,12 +17,17 @@ require('../shared/net/Packets.js');
 require('../shared/net/NetHandler.js');
 require('../shared/net/PacketHandler.js');
 require('../server/system/RemoteServerSystem.js');
+require('../server/system/TrackerSystem.js');
 
 require('./server/net/PacketHandlerServer.js');
 require('./shared/net/Packets.js');
-require('./shared/entity/EntityPointer.js');
-require('./server/component/PacketHandlerComponent.js');
-require('./server/system/TrackerSystem.js');
+require('./shared/component/PlayerPositionComponent.js');
+require('./shared/component/BlockChangeComponent.js');
+require('./shared/system/MovementSystem.js');
+require('./shared/system/VoxelWorld.js');
+require('./shared/entity/EntityPlayer.js');
+require('./shared/block/Block.js');
+require('./shared/AABB.js');
 
 var _world;
 
@@ -39,8 +44,11 @@ Engine.load(function() {
 
     _world.addSystem(new TrackerSystem());
 
+    var voxelWorld = new VoxelWorld(64, 64, 64);
+    voxelWorld.generate();
 
-    global.world = _world;
+    _world.addSystem(voxelWorld);
+    _world.addSystem(new MovementSystem(voxelWorld));
 })
 
 Engine.tick(function() {

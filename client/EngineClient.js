@@ -26,6 +26,7 @@ var _minHeight = 150;
 var _maxWidth = null;
 var _maxHeight = null;
 var _debug = false;
+var _debugText = null;
 
 Engine.setOptions = function(options) {
     _loadOptions = options;
@@ -55,18 +56,28 @@ Engine.resume = function() {
     _paused = false;
 }
 
+Engine.setDebugText = function(e) {
+    _debugText = e;
+}
+
 var _init = function() {
     if (_started == true) return;
     _started = true;
+
+    if (!_loadOptions || typeof(_loadOptions.containerElement) != 'string') {
+        throw new Error('Initialize: Specify the container element id via optionsObject.containerElement in Engine.setOptions(optionsObject).');
+    }
+
+    var container = document.getElementById(_loadOptions.containerElement);
+    if (!container) throw new Error('Initialize: Element with id ' + _loadOptions.containerElement + ' not found.');
+
+    Screen.containerElement = container;
+    container.innerHTML = '';
 
     // Shows error and abandons execution
     if (!_checkBrowserRequirements()) return;
 
     log('Initializing.');
-
-    if (!_loadOptions || typeof(_loadOptions.containerElement) != 'string') {
-        throw new Error('Initialize: Specify the container element id via optionsObject.containerElement in Engine.setOptions(optionsObject).');
-    }
 
     if (Utils.isNumber(_loadOptions.minWidth)) _minWidth = _loadOptions.minWidth;
     if (Utils.isNumber(_loadOptions.minHeight)) _minHeight = _loadOptions.minHeight;
@@ -74,19 +85,13 @@ var _init = function() {
     if (Utils.isNumber(_loadOptions.maxHeight)) _maxHeight = _loadOptions.maxHeight;
     if (_loadOptions.debug) _debug = true;
 
-    var container = document.getElementById(_loadOptions.containerElement);
-    if (!container) throw new Error('Initialize: Element with id ' + _loadOptions.containerElement + ' not found.');
-
     container.style.position = 'relative';
     container.style.overflow = 'hidden';
-
-    Screen.containerElement = container;
-    container.innerHTML = '';
 
     Input.setMouseTarget(Screen.containerElement);
 
     if (_debug) {
-        _debugOverlay = new Canvas(60, 40, 100);
+        _debugOverlay = new Canvas(120, 60, 100);
     }
 
     // Resize container
@@ -169,6 +174,9 @@ var _doFps = function() {
         debugCanvas.fillRect(0, 0, debugCanvas.width, debugCanvas.height, '#fff');
         debugCanvas.fillText(_fpsFramesTotal + ' fps', 5, 5, '#000', 12);
         debugCanvas.fillText(_fpsRenderTime.toFixed(1) + ' ms', 5, 20, '#000', 12);
+        if (_debugText != null) {
+            debugCanvas.fillText(_debugText, 5, 35, '#000', 12);
+        }
     }
 }
 
@@ -263,9 +271,9 @@ var _crashed = false;
  */
 Engine.handleError = function(err, file, line, stack) {
     if (_crashed) return;
+
     if (!Screen.containerElement) return;
     _crashed = true;
-
     _reset();
 
     if (err instanceof Error) {
@@ -281,6 +289,7 @@ Engine.handleError = function(err, file, line, stack) {
     Screen.containerElement.innerHTML = '';
 
     var elem = document.createElement('div');
+    elem.className = 'engine-error';
     elem.style.margin = '30px 0 0 0';
     elem.style.padding = '0 100px 0 100px';
 
@@ -295,7 +304,6 @@ Engine.handleError = function(err, file, line, stack) {
     if (stack == '') elem.innerHTML += err;
     if (file != '' && line != '') elem.innerHTML += '<br><br>' + file + ':' + line + '.'; 
     if (stack != '') elem.innerHTML += stack.replace(/\n/g, '<br>&nbsp;&nbsp;&nbsp;&nbsp;');
-    elem.innerHTML += '<br><br><b>Try refreshing the page.</b><br><br><br><br>';
 
     Screen.containerElement.appendChild(elem);
 

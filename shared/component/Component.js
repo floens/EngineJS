@@ -18,8 +18,11 @@ Component.registerComponent = function(component, id) {
         throw new Error('Component with id already registered (' + id + ')');
     }
     _registeredComponents.set(id, component);
-    component.prototype.id = id;
-    component.id = id;
+    try {
+        component.prototype.id = id;
+        component.id = id;
+    } catch(err) {
+    }
 }
 
 Component.getComponentClass = function(id) {

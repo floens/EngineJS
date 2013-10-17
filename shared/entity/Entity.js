@@ -29,9 +29,13 @@ Entity.prototype.remove = function() {
     this.removed = true;
 }
 
+Entity.prototype.hasComponent = function(component) {
+    return this.components.has(component.id);
+}
+
 Entity.prototype.addComponent = function(component) {
     if (this.components.has(component.id)) throw new Error('Entity: Component already added.');
-	this.components.set(component.id, component);
+    this.components.set(component.id, component);
 }
 
 Entity.prototype.getComponent = function(component) {
@@ -53,8 +57,11 @@ Entity.registerEntity = function(entityClass, id) {
         throw new Error('Entity with id already registered (' + id + ')');
     }
     _registeredEntities.set(id, entityClass);
-    entityClass.prototype.id = id;
-    entityClass.id = id;
+    try {
+        entityClass.prototype.id = id;
+        entityClass.id = id;
+    } catch(err) {
+    }
 }
 
 Entity.getEntityClass = function(id) {

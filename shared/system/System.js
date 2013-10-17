@@ -5,6 +5,7 @@ global.System = function() {
     this._loopType = System.TICK_LOOP;
 
     this.aspects = [];
+    this.orAspects = [];
 
     this.entities = [];
 }
@@ -48,15 +49,21 @@ System.prototype.addAspect = function(aspect) {
     this.aspects.push(aspect);
 }
 
+System.prototype.addOrAspect = function(aspect) {
+    this.orAspects.push(aspect);
+}
+
 System.prototype.process = function() {
     this.tick();
 }
 
 System.prototype.interested = function(entity) {
     for (var i = 0; i < this.aspects.length; i++) {
-        var component = this.aspects[i];
+        if (!entity.components.has(this.aspects[i].id)) return false;
+    }
 
-        if (!entity.components.has(component.id)) return false;
+    for (var i = 0; i < this.orAspects.length; i++) {
+        if (entity.components.has(this.orAspects[i].id)) return true;
     }
 
     return true;
@@ -87,8 +94,11 @@ System.registerSystem = function(system, id) {
         throw new Error('System with id already registered (' + id + ')');
     }
     _registeredSystems.set(id, true);
-    system.prototype.id = id;
-    system.id = id;
+    try {
+        system.prototype.id = id;
+        system.id = id;
+    } catch(err) {
+    }
 }
 
 System.TICK_LOOP = 0;

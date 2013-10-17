@@ -9,7 +9,7 @@ global.TrackerSystem = function() {
     this.trackedComponents = new Map();
 }
 TrackerSystem.extend(System);
-System.registerSystem(TrackerSystem, 100);
+System.registerSystem(TrackerSystem, 3);
 
 TrackerSystem.prototype.tick = function() {
     this.parent.tick.call(this);
@@ -42,10 +42,30 @@ TrackerSystem.prototype.processEntity = function(entity) {
                     var packet = new UpdateComponentPacket();
                     packet.setInfo(entity, component);
                     this.broadcast(packet, sessionId);
+                    component.onBroadcast();
                 }
             }
         }
     }
+
+    var handler = entity.getComponent(PacketHandlerComponent)
+    var pendingBroadcasts = handler.pendingBroadcasts;
+    for (var i = 0; i < pendingBroadcasts.length; i++) {
+        this.broadcast(pendingBroadcasts[i], -1);
+    }
+    handler.pendingBroadcasts = [];
+
+    var pendingPackets = handler.pendingPackets;
+    for (var i = 0; i < pendingPackets.length; i++) {
+        handler.packetHandler.sendPacket(pendingPackets[i]);
+    }
+    handler.pendingPackets = [];
+
+    var pendingExceptBroadcasts = handler.pendingExceptBroadcasts;
+    for (var i = 0; i < pendingExceptBroadcasts.length; i++) {
+        handler.packetHandler.sendBroadcast(pendingExceptBroadcasts[i], entity.sessionId);
+    }
+    handler.pendingExceptBroadcasts = [];
 }
 
 TrackerSystem.prototype.sendPacket = function(entity, packet) {

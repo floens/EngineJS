@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Multiple pointers test</title>
+    <title>WebGL multiplayer test</title>
+    <meta charset="UTF-8">
     <style type="text/css">
     body {
         margin: 0;
@@ -13,7 +14,15 @@
     }
 
     #container {
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -o-user-select: none;
+        user-select: none;
+    }
 
+    .engine-error {
+        color: #ffffff;
     }
     </style>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
@@ -21,6 +30,7 @@
 <body>
     <div id="container"></div>
 
+    <script src="../client/lib/gl-matrix-min.js"></script>
 
     <script src="../client/Setup.js"></script>
     <script src="../shared/Utils.js"></script>
@@ -29,7 +39,7 @@
     <script src="../shared/component/Component.js"></script>
     <script src="../shared/component/PositionComponent.js"></script>
     <script src="../shared/component/RemoteComponent.js"></script>
-    <script src="../shared/component/RemotePositionComponent.js"></script>
+    <script src="../shared/component/PacketHandlerComponent.js"></script>
     <script src="../shared/system/System.js"></script>
     <script src="../shared/net/Packet.js"></script>
     <script src="../shared/net/DataStream.js"></script>
@@ -40,7 +50,8 @@
     <script src="../client/gfx/AssetManager.js"></script>
     <script src="../client/gfx/Screen.js"></script>
     <script src="../client/gfx/Canvas.js"></script>
-    <script src="../client/system/InputSystem.js"></script>
+    <script src="../client/gfx/GLCanvas.js"></script>
+    <script src="../client/gfx/GLRenderer.js"></script>
     <script src="../client/system/RemoteClientSystem.js"></script>
     <script src="../client/ui/UIManager.js"></script>
     <script src="../client/ui/UI.js"></script>
@@ -48,15 +59,31 @@
     <script src="../client/ui/UIMain.js"></script>
     <script src="../client/ui/UIBack.js"></script>
     <script src="../client/ui/UIText.js"></script>
-    <script src="../client/ui/UILoad.js"></script>
+    <script src="../client/ui/UIAssetLoad.js"></script>
     <script src="../client/Storage.js"></script>
     <script src="../client/EngineClient.js"></script>
     
     <script src="client/system/RenderSystem.js"></script>
+    <script src="client/system/CameraSystem.js"></script>
+    <script src="client/system/ControlSystem.js"></script>
+    <script src="client/system/VoxelRenderer.js"></script>
+    <script src="client/component/CameraComponent.js"></script>
+    <script src="client/component/PlayerModel.js"></script>
+    <script src="client/component/ControlComponent.js"></script>
     <script src="client/net/PacketHandlerClient.js"></script>
     <script src="client/ui/UILoad.js"></script>
+    <script src="client/gfx/ModelRenderer.js"></script>
+    <script src="client/gfx/Model.js"></script>
+    <script src="client/gfx/VoxelChunk.js"></script>
+    <script src="client/gfx/Renderable.js"></script>
     <script src="shared/net/Packets.js"></script>
-    <script src="shared/entity/EntityPointer.js"></script>
+    <script src="shared/component/PlayerPositionComponent.js"></script>
+    <script src="shared/component/BlockChangeComponent.js"></script>
+    <script src="shared/system/MovementSystem.js"></script>
+    <script src="shared/system/VoxelWorld.js"></script>
+    <script src="shared/entity/EntityPlayer.js"></script>
+    <script src="shared/block/Block.js"></script>
+    <script src="shared/AABB.js"></script>
     
     <script src="clientDemo.js"></script>
 </body>

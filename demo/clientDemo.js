@@ -2,57 +2,81 @@
 'use strict';
 
 Engine.setOptions({
-    containerElement: 'container'
+    containerElement: 'container',
+    debug: true
 })
 
 var _world;
 var _packetHandler;
 
 Engine.load(function() {
-    _world = new World();
+    // Input.setFullscreen(true);
+    Input.setPointerLocked(true);
 
-    _world.addSystem(new RenderSystem());
+    AssetManager.loadFile('shaders/worldVertex.txt', 'worldVertex');
+    AssetManager.loadFile('shaders/worldFragment.txt', 'worldFragment');
+    AssetManager.loadFile('shaders/modelVertex.txt', 'modelVertex');
+    AssetManager.loadFile('shaders/modelFragment.txt', 'modelFragment');
+
+    AssetManager.loadImage('images/terrain.png', 'terrain');
+    AssetManager.loadImage('images/controls.png', 'controls');
+    AssetManager.loadImage('images/player.png', 'player');
+
+    UIManager.set(new UIAssetLoad(start, '#ffffff'));
+})
+
+var start = function() {
+    UIManager.set(null);
+
+    var renderSystem = new RenderSystem();
+    if (!renderSystem.canvas.getReady()) return;
+
+    _world = new World();
+    _world.addSystem(renderSystem);
+    _world.addSystem(new CameraSystem());
+    _world.addSystem(new ModelRenderer(renderSystem.canvas));
+    _world.addSystem(new VoxelRenderer(renderSystem.canvas));
 
     var remoteSystem = new RemoteClientSystem('ws://192.168.6.151:8080', function() {
         _packetHandler = new PacketHandlerClient();
         _packetHandler.setWorld(_world);
         return _packetHandler;
     });
-
     _world.addSystem(remoteSystem);
 
     UIManager.set(new UILoad('Connecting'));
-})
+
+    Engine.tick(tick);
+    Engine.render(render);
+}
 
 var _lx = 0;
 var _ly = 0;
+var _lz = 0;
+var _lYaw = 0;
+var _lPitch = 0;
 
-Engine.tick(function() {
+var tick = function() {
     _world.tick();
 
-    var mouse = Input.getMousePosition();
-    var x = mouse[0] / Screen.width;
-    var y = mouse[1] / Screen.height;
+    var ph = _packetHandler;
+    if (ph.entity != null) {
+        var pos = ph.entity.getComponent(PlayerPositionComponent);
+        if (pos.x != _lx || pos.y != _ly || pos.z != _lz || pos.yaw != _lYaw || pos.pitch != _lPitch) {
+            _lx = pos.x;
+            _ly = pos.y;
+            _lz = pos.z;
+            _lYaw = pos.yaw;
+            _lPitch = pos.pitch;
 
-    if (x != _lx || y != _ly) {
-        _lx = x;
-        _ly = y;
-
-        var packet = new PointerPositionPacket();
-        packet.setInfo(-1, x, y);
-
-        _packetHandler.sendPacket(packet);
+            ph.sendPacket(new ClientPositionPacket(pos.x, pos.y, pos.z, pos.yaw, pos.pitch));
+        }
     }
-})
+}
 
-Engine.render(function() {
+var render = function() {
     _world.render();
-})
-
-
-
-
-
+}
 
 
 Engine.init();

@@ -71,7 +71,7 @@ global.UpdateComponentPacket = function() {
     this.component = null;
 }
 UpdateComponentPacket.extend(Packet);
-Packet.registerPacket(UpdateComponentPacket, 5, false, true);
+Packet.registerPacket(UpdateComponentPacket, 4, false, true);
 
 UpdateComponentPacket.prototype.setInfo = function(entity, component) {
     this.entity = entity;
@@ -105,7 +105,7 @@ global.DestroyEntityPacket = function(entity) {
     this.sessionId = entity == undefined ? -1 : entity.sessionId;
 }
 DestroyEntityPacket.extend(Packet);
-Packet.registerPacket(DestroyEntityPacket, 6, false, true);
+Packet.registerPacket(DestroyEntityPacket, 5, false, true);
 
 DestroyEntityPacket.prototype.read = function(dataStream) {
     this.sessionId = dataStream.readNumber();

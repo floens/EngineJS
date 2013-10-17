@@ -7,7 +7,6 @@ module.exports = function(grunt) {
         'shared/component/Component.js',
         'shared/component/PositionComponent.js',
         'shared/component/RemoteComponent.js',
-        'shared/component/RemotePositionComponent.js',
         'shared/system/System.js',
         'shared/net/Packet.js',
         'shared/net/DataStream.js',
@@ -18,7 +17,8 @@ module.exports = function(grunt) {
         'client/gfx/AssetManager.js',
         'client/gfx/Screen.js',
         'client/gfx/Canvas.js',
-        'client/system/InputSystem.js',
+        'client/gfx/GLCanvas.js',
+        'client/gfx/GLRenderer.js',
         'client/system/RemoteClientSystem.js',
         'client/net/PacketHandlerClient.js',
         'client/ui/UIManager.js',
@@ -27,7 +27,7 @@ module.exports = function(grunt) {
         'client/ui/UIMain.js',
         'client/ui/UIBack.js',
         'client/ui/UIText.js',
-        'client/ui/UILoad.js',
+        'client/ui/UIAssetLoad.js',
         'client/Storage.js',
         'client/EngineClient.js'
     ];
@@ -40,14 +40,15 @@ module.exports = function(grunt) {
         'shared/component/Component.js',
         'shared/component/PositionComponent.js',
         'shared/component/RemoteComponent.js',
-        'shared/component/RemotePositionComponent.js',
         'shared/system/System.js',
         'shared/net/Packet.js',
         'shared/net/DataStream.js',
         'shared/net/Packets.js',
         'shared/net/NetHandler.js',
         'shared/net/PacketHandler.js',
+        'server/component/PacketHandlerComponent.js',
         'server/system/RemoteServerSystem.js',
+        'server/system/TrackerSystem.js',
         'server/EngineServer.js'
     ];
 
@@ -55,7 +56,8 @@ module.exports = function(grunt) {
 
     var buildVersion = packageJson.version;
 
-    var banner = '/* ' + new Date().getFullYear() + ' - build ' + buildVersion + ' */\n';
+    var banner = 
+        '/* ' + new Date().getFullYear() + ' - build ' + buildVersion + ' */\n';
 
     grunt.log.write('Building version ' + buildVersion + '.');
 
@@ -71,6 +73,11 @@ module.exports = function(grunt) {
                 files: {
                     'build/tmp/clientConcat.js': clientFiles,
                     'build/tmp/serverConcat.js': serverFiles
+                }
+            },
+            license: {
+                files: {
+                    'build/EngineClient.js': ['client/lib/gl-matrix-license.txt', 'build/EngineClient.js']
                 }
             }
         },
@@ -91,5 +98,5 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-clean');
 
-    grunt.registerTask('default', ['clean', 'concat', 'uglify']);
+    grunt.registerTask('default', ['clean', 'concat:build', 'uglify', 'concat:license']);
 };

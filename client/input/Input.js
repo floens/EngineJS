@@ -87,12 +87,12 @@ var _pressedKeys = {},
         121: 'F10'
     }
 
-Input.isKeyPressed = function(name) {
+Input.getKeyPressed = function(name) {
     return _pressedKeys[name] == undefined ? false : true;
 }
 
 // Only returns true once when called until the key is lifted again
-Input.isKeyPressedOnce = function(name) {
+Input.getKeyPressedOnce = function(name) {
     var keyPressed = Input.isKeyPressed(name);
 
     if (keyPressed && _pressedKeysOnce[name] == undefined) {
@@ -152,6 +152,11 @@ Input.setMouseTarget = function(element) {
     element.addEventListener('contextmenu', _onContextMenu, false);
     document.addEventListener('mousewheel', _onMouseScroll, false);
     document.addEventListener('DOMMouseScroll', _onMouseScroll, false);
+
+    element.addEventListener('touchstart', _touchStart, false);
+    element.addEventListener('touchend', _touchEnd, false);
+    element.addEventListener('touchcancel', _touchCancel, false);
+    element.addEventListener('touchmove', _touchMove, false);
 }
 
 Input.getMouseScroll = function() {
@@ -159,7 +164,7 @@ Input.getMouseScroll = function() {
 }
 
 Input.getMousePosition = function() {
-    return [Math.floor(_mouseX), Math.floor(_mouseY)];
+    return new Vec2(Math.floor(_mouseX), Math.floor(_mouseY));
 }
 
 Input.getMousePressed = function(button) {
@@ -185,17 +190,18 @@ var _onContextMenu = function(event) {
     event.preventDefault();
 }
 
-var _onMouseMove = function(event) {
-    var bb = _mouseTarget.getBoundingClientRect();
-
-    _mouseX = event.pageX - bb.left;
-    _mouseY = event.pageY - bb.top;
-}
-
 var _onMouseDown = function(event) {
     var b = event.button;
     if (b == 0) _mousePressedLeft = true;
         else if (b == 2) _mousePressedRight = true;
+
+    if (_fullscreenEnabled && !_isFullscreen) {
+        _requestFullscreen();
+    }
+
+    if (_pointerLockEnabled && !_isPointerLocked) {
+        _requestPointerLock();
+    }
 }
 
 var _onMouseUp = function(event) {
@@ -213,11 +219,202 @@ var _onMouseScroll = function(e) {
     _mouseDelta += Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)));
 }
 
+var _onMouseMove = function(event) {
+    if (_isPointerLocked) {
+        var x = event.movementX || event.mozMovementX || event.webkitMovementX || 0;
+        var y = event.movementY || event.mozMovementY || event.webkitMovementY || 0;
+
+        _mouseX += x;
+        _mouseY += y;
+    } else {
+        var bb = _mouseTarget.getBoundingClientRect();
+
+        _mouseX = event.pageX - bb.left;
+        _mouseY = event.pageY - bb.top;
+    }
+}
+
+
+var _fullscreenEnabled = false;
+var _isFullscreen = false;
+var _pointerLockEnabled = false;
+var _isPointerLocked = false;
+Input.setPointerLocked = function(e) {
+    _pointerLockEnabled = e;
+}
+
+Input.getPointerLocked = function() {
+    return _isPointerLocked;
+}
+
+var _requestPointerLock = function() {
+    _mouseTarget.requestPointerLock = _mouseTarget.requestPointerLock || _mouseTarget.mozRequestPointerLock || _mouseTarget.webkitRequestPointerLock || null;
+
+    if (_mouseTarget.requestPointerLock != null) {
+        _mouseTarget.requestPointerLock();
+    } else {
+        log('Pointer cannot be locked', log.ERROR);
+    }
+}
+
+var _pointerLockChange = function(event) {
+    var element = document.pointerLockElement || document.mozPointerLockElement || document.webkitPointerLockElement || null;
+
+    if (element) {
+        _isPointerLocked = true;
+    } else {
+        _isPointerLocked = false;
+    }
+}
+
+var _pointerLockError = function(event) {
+    if (_fullscreenEnabled) {
+        log('Pointer cannot be locked.', log.WARN);
+    } else {
+        log('Pointer cannot be locked, trying full screen next time.', log.WARN);
+
+        Input.setFullscreen(true);
+    }
+}
+
+
+Input.setFullscreen = function(e) {
+    _fullscreenEnabled = e;
+}
+
+Input.getFullscreen = function() {
+    return _isFullscreen;
+}
+
+var _requestFullscreen = function() {
+    _mouseTarget.requestFullscreen = _mouseTarget.requestFullscreen || _mouseTarget.mozRequestFullscreen || _mouseTarget.webkitRequestFullscreen || null;
+
+    if (_mouseTarget.requestFullscreen != null) {
+        _mouseTarget.requestFullscreen();
+    } else {
+        log('Pointer cannot be locked', log.ERROR);
+    }
+}
+
+var _fullscreenChange = function(event) {
+    var element = document.fullscreenElement || document.webkitFullscreenElement || document.mozFullscreenElement || null;
+
+    if (element) {
+        _isFullscreen = true;
+    } else {
+        _isFullscreen = false;
+    }
+}
+
+var _touchMap = new Map();
+var _hadTouchOnce = false;
+var _touchStart = function(event) {
+    event.preventDefault();
+
+    _hadTouchOnce = true;
+
+    var touches = event.touches || null;
+    if (touches != null) {
+        for (var i = 0; i < touches.length; i++) {
+            var e = touches[i];
+            if (!_touchMap.has(e.identifier)) {
+                _touchMap.set(e.identifier, new TouchWrapper(e));
+            }
+        }
+    }
+}
+
+var _touchEnd = function(event) {
+    var touches = event.touches || null;
+    if (touches != null) {
+        // Set used to false
+        var touchMapKeys = _touchMap.keys();
+        for (var i = 0; i < touchMapKeys.length; i++) {
+            _touchMap.get(touchMapKeys[i]).used = false;
+        }
+
+        // Touches who still exists set used to true
+        for (var i = 0; i < touches.length; i++) {
+            _touchMap.get(touches[i].identifier).used = true;
+        }
+
+        // Remove removed touches from touchMap
+        var touchMapKeys = _touchMap.keys();
+        for (var i = 0; i < touchMapKeys.length; i++) {
+            if (!_touchMap.get(touchMapKeys[i]).used) {
+                _touchMap.remove(touchMapKeys[i]);
+            }
+        }
+    }
+}
+
+var _touchCancel = function(event) {
+    _touchEnd(event);
+}
+
+var _touchMove = function(event) {
+    event.preventDefault();
+
+    var touches = event.touches || null;
+    if (touches != null) {
+        for (var i = 0; i < touches.length; i++) {
+            var e = touches[i];
+            if (_touchMap.has(e.identifier)) {
+                _touchMap.get(e.identifier).setPosition(e);
+            }
+        }
+    }
+}
+
+Input.getTouches = function() {
+    var keys = _touchMap.keys();
+    var list = [];
+    for (var i = 0; i < keys.length; i++) {
+        list.push(_touchMap.get(keys[i]));
+    }
+
+    return list;
+}
+
+Input.getHadTouchOnce = function() {
+    return _hadTouchOnce;
+}
+
+
+var TouchWrapper = function(touch) {
+    this.id = touch.identifier;
+    this.used = true;
+    this.x = 0;
+    this.y = 0;
+    this.touch = touch;
+
+    this.setPosition(touch);
+}
+
+TouchWrapper.prototype.setPosition = function(touch) {
+    this.x = touch.screenX;
+    this.y = touch.screenY;
+    this.touch = touch;
+}
+
+
 
 
 if (document.addEventListener != undefined) {
     document.addEventListener('keydown', _onKeyDown, false);
     document.addEventListener('keyup', _onKeyUp, false);
+
+    document.addEventListener('pointerlockchange', _pointerLockChange, false);
+    document.addEventListener('mozpointerlockchange', _pointerLockChange, false);
+    document.addEventListener('webkitpointerlockchange', _pointerLockChange, false);
+
+    document.addEventListener('pointerlockerror', _pointerLockError, false);
+    document.addEventListener('mozpointerlockerror', _pointerLockError, false);
+    document.addEventListener('webkitpointerlockerror', _pointerLockError, false);
+
+    document.addEventListener('fullscreenchange', _fullscreenChange, false);
+    document.addEventListener('mozfullscreenchange', _fullscreenChange, false);
+    document.addEventListener('webkitfullscreenchange', _fullscreenChange, false);
 }
 
 

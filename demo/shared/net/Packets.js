@@ -1,70 +1,102 @@
 (function(global, undefined) {
 'use strict';
 
-global.CreatePointerPacket = function(sessionId) {
+global.ClientPositionPacket = function(x, y, z, yaw, pitch) {
     Packet.call(this);
 
-    this.sessionId = sessionId;
+    this.x = x == undefined ? 0 : x;
+    this.y = y == undefined ? 0 : y;
+    this.z = z == undefined ? 0 : z;
+    this.yaw = yaw == undefined ? 0 : yaw;
+    this.pitch = pitch == undefined ? 0 : pitch;
 }
-CreatePointerPacket.extend(Packet);
-Packet.registerPacket(CreatePointerPacket, 100, false, true);
+ClientPositionPacket.extend(Packet);
+Packet.registerPacket(ClientPositionPacket, 100, true, false);
 
-CreatePointerPacket.prototype.read = function(dataStream) {
-    this.sessionId = dataStream.readNumber();
-}
-
-CreatePointerPacket.prototype.write = function(dataStream) {
-    dataStream.writeNumber(this.sessionId);
-}
-
-
-
-
-global.PointerPositionPacket = function() {
-    Packet.call(this);
-
-    this.sessionId = 0;
-    this.x = 0;
-    this.y = 0;
-}
-PointerPositionPacket.extend(Packet);
-Packet.registerPacket(PointerPositionPacket, 101, true, true);
-
-PointerPositionPacket.prototype.read = function(dataStream) {
-    this.sessionId = dataStream.readNumber();
+ClientPositionPacket.prototype.read = function(dataStream) {
     this.x = dataStream.readNumber();
     this.y = dataStream.readNumber();
+    this.z = dataStream.readNumber();
+    this.yaw = dataStream.readNumber();
+    this.pitch = dataStream.readNumber();
 }
 
-PointerPositionPacket.prototype.write = function(dataStream) {
-    dataStream.writeNumber(this.sessionId);
+ClientPositionPacket.prototype.write = function(dataStream) {
     dataStream.writeNumber(this.x);
     dataStream.writeNumber(this.y);
-}
-
-PointerPositionPacket.prototype.setInfo = function(sessionId, x, y) {
-    this.sessionId = sessionId;
-    this.x = x;
-    this.y = y;
+    dataStream.writeNumber(this.z);
+    dataStream.writeNumber(this.yaw);
+    dataStream.writeNumber(this.pitch);
 }
 
 
-
-global.DestroyPointerPacket = function(sessionId) {
+global.BlockChangePacket = function(x, y, z, a) {
     Packet.call(this);
 
-    this.sessionId = sessionId;
+    this.x = x == undefined ? 0 : x;
+    this.y = y == undefined ? 0 : y;
+    this.z = z == undefined ? 0 : z;
+    this.a = a == undefined ? 0 : a;
 }
-DestroyPointerPacket.extend(Packet);
-Packet.registerPacket(DestroyPointerPacket, 102, false, true);
+BlockChangePacket.extend(Packet);
+Packet.registerPacket(BlockChangePacket, 101, true, true);
 
-DestroyPointerPacket.prototype.read = function(dataStream) {
-    this.sessionId = dataStream.readNumber();
+BlockChangePacket.prototype.read = function(dataStream) {
+    this.x = dataStream.readNumber();
+    this.y = dataStream.readNumber();
+    this.z = dataStream.readNumber();
+    this.a = dataStream.readNumber();
 }
 
-DestroyPointerPacket.prototype.write = function(dataStream) {
-    dataStream.writeNumber(this.sessionId);
+BlockChangePacket.prototype.write = function(dataStream) {
+    dataStream.writeNumber(this.x);
+    dataStream.writeNumber(this.y);
+    dataStream.writeNumber(this.z);
+    dataStream.writeNumber(this.a);
 }
+
+
+global.BlockDataPacket = function(voxelWorld) {
+    Packet.call(this);
+
+    this.voxelWorld = voxelWorld == undefined ? null : voxelWorld;
+
+    this.width = -1;
+    this.height = -1;
+    this.depth = -1;
+    this.voxelData = null;
+}
+BlockDataPacket.extend(Packet);
+Packet.registerPacket(BlockDataPacket, 102, false, true);
+
+BlockDataPacket.prototype.read = function(dataStream) {
+    this.width = dataStream.readNumber();
+    this.height = dataStream.readNumber();
+    this.depth = dataStream.readNumber();
+
+    var length = this.width * this.height * this.depth;
+
+    this.voxelData = new Int8Array(length);
+
+    for (var i = 0; i < length; i++) {
+        this.voxelData[i] = dataStream.readNumber();
+    }
+}
+
+BlockDataPacket.prototype.write = function(dataStream) {
+    var w = this.voxelWorld;
+
+    dataStream.writeNumber(w.width);
+    dataStream.writeNumber(w.height);
+    dataStream.writeNumber(w.depth);
+
+    var tileArray = w.tileArray;
+    for (var i = 0; i < tileArray.length; i++) {
+        dataStream.writeNumber(tileArray[i]);
+    }
+}
+
+
 
 
 })(global);

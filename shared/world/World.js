@@ -2,11 +2,9 @@
 'use strict';
 
 global.World = function(width, height) {
-    this.remote = true;
-
     this.tickCount = 0;
 
-    this.sessionIdCounter = 0;
+    this.sessionIdCounter = 1;
     this.entities = [];
     this.systems = [];
 
@@ -44,16 +42,6 @@ World.prototype.tickSystems = function() {
 }
 
 /**
- * A world is remote when it was created by a server, e.g. multiplayer.
- * A remote world behaves differently wrom a non-remote world in that the systems don't get called.
- * Entities in a remote world should change position and animation from the server.
- * @param  {boolean} remote
- */
-World.prototype.setRemote = function(remote) {
-    this.remote = remote;
-}
-
-/**
  * Add a system to this world
  * @param  {System} system
  */
@@ -61,6 +49,25 @@ World.prototype.addSystem = function(system) {
     if (!(system instanceof System)) throw new Error('Not a System.');
     this.systems.push(system);
     this.systemIdMap.set(system.id, system);
+}
+
+/**
+ * Remove an system 
+ * @param  {System} system The class of the system
+ * @return {boolean}       True if system was removed, false otherwise
+ */
+World.prototype.removeSystem = function(system) {
+    var wasRemoved = false;
+    for (var i = 0; i < this.systems.length; i++) {
+        if (this.systems[i].id == system.id) {
+            this.systems.splice(i, 1);
+            this.systemIdMap.remove(system.id);
+            wasRemoved = true;
+            break;
+        }
+    }
+
+    return wasRemoved;
 }
 
 /**
@@ -109,6 +116,12 @@ World.prototype.removeEntities = function() {
                 this.systems[j]._tryRemoveEntity(entity);
             }
         }
+    }
+}
+
+World.prototype.clearEntities = function() {
+    for (var i = 0; i < this.entities.length; i++) {
+        this.entities[i].remove();
     }
 }
 

@@ -5,8 +5,8 @@ global.NetHandler = function(connection, system) {
     this.connection = connection;
     this.system = system;
 
-    this.maxOutboundBytesPerTick = 500;
-    this.maxInboundBytesPerTick = 250;
+    this.maxOutboundBytesPerTick = 50000;
+    this.maxInboundBytesPerTick = 50000;
 
     this.tickCount = 0;
     this.bytesIn = 0;
@@ -35,7 +35,7 @@ NetHandler.prototype.tick = function() {
 }
 
 NetHandler.prototype.disconnect = function(reason) {
-    this.connected = false;
+    if (reason != undefined) log('Disconnecting: ' + reason);
 
     try {
         this.writeConnection(new DisconnectPacket(reason == undefined ? '' : reason))
@@ -43,6 +43,8 @@ NetHandler.prototype.disconnect = function(reason) {
     } catch(err) {
         log('Error closing connection.');
     }
+
+    this.connected = false;
 }
 
 NetHandler.prototype.getConnected = function() {
@@ -82,7 +84,7 @@ NetHandler.prototype.writeConnection = function(packet) {
 
     var stream = null;
     try {
-        stream = Packet.writeStream(packet);
+        stream = Packet.writeStream(packet, CLIENT);
     } catch(err) {
         log(err, true);
         return;

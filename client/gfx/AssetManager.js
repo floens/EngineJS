@@ -33,13 +33,24 @@ var AssetManager = {
     assetMap: new Map(),
     progress: new AssetLoadProgress()
 }
-AssetManager.load = function(src, name, options) {
+AssetManager.loadImage = function(src, name, options) {
     if (this.assetMap.has(name)) {
         log('AssetManager: Asset with that name already requested.', log.ERROR);
         return;
     }
 
-    this.assetMap.set(name, new Asset(src, options));
+    this.assetMap.set(name, new ImageAsset(src, options));
+
+    this.progress.upTotal();
+}
+
+AssetManager.loadFile = function(src, name, options) {
+    if (this.assetMap.has(name)) {
+        log('AssetManager: Asset with that name already requested.', log.ERROR);
+        return;
+    }
+
+    this.assetMap.set(name, new FileAsset(src, options));
 
     this.progress.upTotal();
 }
@@ -63,7 +74,47 @@ AssetManager.getProgress = function() {
 }
 
 
-var Asset = function(src, options) {
+
+var FileAsset = function(src, options) {
+    this.src = src;
+
+    this.loaded = false;
+    this.request = null;
+
+    this.load();
+}
+
+FileAsset.prototype.load = function() {
+    this.request = new XMLHttpRequest();
+
+    var self = this;
+    this.request.onreadystatechange = function() {
+        if (self.request.readyState == 4) {
+            if (self.request.status == 200) {
+                self.loaded = true;
+
+                AssetManager.progress.upLoaded();
+            } else {
+                log('AssetManager: Failed to load FileAsset.');
+            }
+        }
+    }
+
+    this.request.open('GET', this.src);
+    this.request.send();
+}
+
+FileAsset.prototype.getRequest = function() {
+    return this.request;
+}
+
+FileAsset.prototype.getText = function() {
+    return this.request.responseText;
+}
+
+
+
+var ImageAsset = function(src, options) {
     this.src = src;
     this.scale = options && options.scale ? options.scale : 1;
 
@@ -73,7 +124,7 @@ var Asset = function(src, options) {
     this.load();
 }
 
-Asset.prototype.getImage = function() {
+ImageAsset.prototype.getImage = function() {
     if (!this.loaded) {
         log('AssetManager: Asset not loaded', log.ERROR);
         return null;
@@ -81,7 +132,7 @@ Asset.prototype.getImage = function() {
     return this.image;
 }
 
-Asset.prototype.load = function() {
+ImageAsset.prototype.load = function() {
     var self = this;
 
     this.image = new Image();
@@ -95,7 +146,7 @@ Asset.prototype.load = function() {
     this.image.src = this.src;
 }
 
-Asset.prototype.onLoad = function() {
+ImageAsset.prototype.onLoad = function() {
     if (this.scale != 1) this.doScale();
 
     this.loaded = true;
@@ -103,7 +154,7 @@ Asset.prototype.onLoad = function() {
     AssetManager.progress.upLoaded();
 }
 
-Asset.prototype.doScale = function() {
+ImageAsset.prototype.doScale = function() {
     var canvas = document.createElement('canvas');
     // Quick browser check, because asset loading can be done done before the main initializing
     if (canvas.getContext == undefined) return;
