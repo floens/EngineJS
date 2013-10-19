@@ -1,4 +1,4 @@
-(function(global, undefined) {
+(function(global) {
 'use strict';
 
 var _model = null;
@@ -18,8 +18,10 @@ global.PlayerModel = function() {
     this.rotateSpeed = 0;
 
     this.armRotateZ = 0;
-    this.armRotateX = 0;
+    this.armIdleRotate = 0;
     this.legRotateZ = 0;
+    this.bodyRotateYSpeed = 0;
+    this.bodyRotateY = 0;
 
     this.lastX = 0;
     this.lastY = 0;
@@ -37,7 +39,7 @@ PlayerModel.prototype.render = function(gl, renderer, program, pos) {
     this.x = interp.x;
     this.y = interp.y;
     this.z = interp.z;
-    this.headYaw = interp.yaw;
+    this.headYaw = interp.yaw + Math.PI / 2;
     this.headPitch = interp.pitch;
 
     var dx = this.x - this.lastX;
@@ -48,12 +50,26 @@ PlayerModel.prototype.render = function(gl, renderer, program, pos) {
     this.rotateSpeed += Math.sqrt(dx * dx + dz * dz) * 0.04;
     this.rotateSpeed *= 0.8;
 
-    this.armRotateX += 0.05;
+    this.armIdleRotate += 0.05;
+
+    if (this.headYaw - this.bodyRotateY > 0.2) {
+        this.bodyRotateYSpeed += 0.08;
+    }
+    if (this.headYaw - this.bodyRotateY < -0.2) {
+        this.bodyRotateYSpeed -= 0.08;
+    }
+    if (Math.abs(this.headYaw - this.bodyRotateY) > 2) {
+        this.bodyRotateYSpeed = 0;
+        this.bodyRotateY = this.headYaw;
+    }
+
+    this.bodyRotateY += this.bodyRotateYSpeed;
+    this.bodyRotateYSpeed *= 0.6;
 
     renderer.pushMatrix();
         renderer.translate(this.x + 0.15, this.y, this.z - 0.1);
         renderer.translate(1 / 4, 0, 1 / 2);
-        renderer.rotateY(-this.headYaw - Math.PI / 2);
+        renderer.rotateY(-this.bodyRotateY);
         renderer.translate(-1 / 4, 0, -1 / 2);
 
         _model.render();
@@ -67,7 +83,7 @@ PlayerModel.prototype.render = function(gl, renderer, program, pos) {
 
             renderer.translate(1 / 4, 6 / 4, 1 / 4);
 
-            // renderer.rotateY(-this.headYaw - Math.PI / 2);
+            renderer.rotateY(-(this.headYaw - this.bodyRotateY));
             // renderer.rotateX(0.5);
             renderer.rotateZ(this.headPitch);
             
@@ -83,8 +99,8 @@ PlayerModel.prototype.render = function(gl, renderer, program, pos) {
         renderer.pushMatrix();
             renderer.pushMatrix();
                 renderer.translate(1 / 4, 3 / 2, 2 / 8);
-                renderer.rotateZ(Math.sin(this.armRotateZ) * this.rotateSpeed * 50);
-                renderer.rotateX((Math.sin(this.armRotateX) + 1) * 0.02);
+                renderer.rotateZ((Math.sin(this.armRotateZ) * this.rotateSpeed * 50) + (-Math.cos(this.armIdleRotate) + 1) * 0.021);
+                renderer.rotateX((Math.sin(this.armIdleRotate) + 1) * 0.02);
                 renderer.translate(-1 / 8, -3 / 4, -2 / 8);
 
                 _arm.render();
@@ -95,8 +111,8 @@ PlayerModel.prototype.render = function(gl, renderer, program, pos) {
 
             renderer.pushMatrix();
                 renderer.translate(1 / 4, 3 / 2, 2 / 8);
-                renderer.rotateZ(Math.sin(this.armRotateZ) * this.rotateSpeed * 50);
-                renderer.rotateX((Math.sin(this.armRotateX) + 1) * 0.021);
+                renderer.rotateZ((Math.sin(this.armRotateZ) * this.rotateSpeed * 50) + (Math.cos(this.armIdleRotate) + 1) * 0.021);
+                renderer.rotateX((Math.sin(this.armIdleRotate) + 1) * 0.021);
                 // renderer.rotateY(Math.PI);
                 renderer.translate(-1 / 8, -3 / 4, -2 / 8);
 

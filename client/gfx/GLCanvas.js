@@ -1,4 +1,4 @@
-(function(global, undefined) {
+(function(global) {
 'use strict';
 
 global.GLCanvas = function(width, height, zIndex, webglOptions) {

@@ -1,5 +1,9 @@
-(function(global, undefined) {
+(function(global) {
 'use strict';
+
+/**
+ * @namespace Utils
+ */
 
 Function.prototype.extend = function(object) {
     try {
@@ -95,8 +99,8 @@ global.Vec4 = function(x, y, z, a) {
 
 /**
  * Log a message in the console
- * @param  {String OR Object} loggable What to log
- * @param  {boolean or enum}  level    If passed true, log it directly without time. 
+ * @param  {String | Object} loggable What to log
+ * @param  {boolean | enum}  level    If passed true, log it directly without time. 
  *                                     This is useful for when you want object to be inspectable.
  *                                     Otherwise enum log.INFO, log.WARN or log.ERROR
  */

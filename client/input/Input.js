@@ -1,4 +1,4 @@
-(function(global, undefined) {
+(function(global) {
 'use strict';
 
 global.Input = {};
@@ -16,6 +16,11 @@ global.InputTextform = function(x, y, width, height, defaultString, textAlign) {
     if (defaultString == undefined) defaultString = '';
     if (textAlign == undefined) textAlign = 'center';
 
+    this.x = x;
+    this.y = y;
+    this.width = width;
+    this.height = height;
+
     this.inputElement = this._createTextform(x, y, width, height, defaultString, textAlign);
 
     Screen.containerElement.appendChild(this.inputElement);
@@ -30,6 +35,7 @@ InputTextform.prototype._createTextform = function(x, y, width, height, defaultS
     inputElement.style.padding = '0';
     inputElement.style.border = '0';
     inputElement.style.outline = '0';
+    inputElement.style.background = 'none';
     inputElement.style.zIndex = 200;
     inputElement.style.left = (x) + 'px';
     inputElement.style.top = (y) + 'px';
@@ -50,9 +56,16 @@ InputTextform.prototype._createTextform = function(x, y, width, height, defaultS
  * @param {number} x 
  * @param {number} y 
  */
-InputTextform.prototype.setPosition = function(x, y) {
+InputTextform.prototype.setPosition = function(x, y, width, height) {
     this.inputElement.style.left = (x) + 'px';
     this.inputElement.style.top = (y) + 'px';
+    this.inputElement.style.width = (width) + 'px';
+    this.inputElement.style.height = (height) + 'px';
+
+    this.x = x;
+    this.y = y;
+    this.width = width;
+    this.height = height;
 }
 
 /**
@@ -309,8 +322,6 @@ var _fullscreenChange = function(event) {
 var _touchMap = new Map();
 var _hadTouchOnce = false;
 var _touchStart = function(event) {
-    event.preventDefault();
-
     _hadTouchOnce = true;
 
     var touches = event.touches || null;

@@ -1,4 +1,4 @@
-(function(global, undefined) {
+(function(global) {
 'use strict';
 
 global.EntityPlayer = function(world) {

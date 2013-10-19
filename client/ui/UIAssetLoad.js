@@ -1,4 +1,4 @@
-(function(global, undefined) {
+(function(global) {
 'use strict';
 
 /*****
@@ -35,7 +35,7 @@ UIAssetLoad.prototype.render = function() {
 
     var number = Math.round(progress.getPercentage() * 100);
 
-    this.canvas.fillText('Loading ' + number + '%', this.w / 2, this.h / 2, this.color, 18, 'center');
+    this.canvas.fillText('Loading ' + number + '%', this.width / 2, this.height / 2 - 9, this.color, 18, 'center');
 }
 
 })(global);

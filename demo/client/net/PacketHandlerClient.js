@@ -1,4 +1,4 @@
-(function(global, undefined) {
+(function(global) {
 'use strict';
 
 global.PacketHandlerClient = function() {
@@ -7,6 +7,8 @@ global.PacketHandlerClient = function() {
     this.world = null;
 
     this.entity = null;
+
+    this.disconnectReason = '';
 }
 PacketHandlerClient.extend(PacketHandler);
 
@@ -41,8 +43,7 @@ PacketHandlerClient.prototype.handlePacket = function(packet) {
 
             break;
         case DisconnectPacket.id:
-            log('Disconnected: ' + packet.reason);
-            UIManager.set(new UILoad('Disconnected: ' + packet.reason, '#ffffff'));
+            this.disconnectReason = packet.reason;
 
             break;
         case BlockDataPacket.id:
@@ -88,7 +89,7 @@ PacketHandlerClient.prototype.onConnect = function() {
 PacketHandlerClient.prototype.onDisconnect = function() {
     log('Disconnected');
 
-    UIManager.set(new UILoad('Disconnected', '#ffffff'));
+    UIManager.set(new UIText('Disconnected' + (this.disconnectReason.length > 0 ? ': ' + this.disconnectReason : ''), '#ffffff'));
 
     this.world.clearEntities();
     this.world.removeSystem(MovementSystem);
@@ -97,7 +98,7 @@ PacketHandlerClient.prototype.onDisconnect = function() {
 }
 
 PacketHandlerClient.prototype.onError = function() {
-    UIManager.set(new UILoad('Connection error', '#ffffff'));
+    // onDisconnect called after this
 }
 
 PacketHandlerClient.prototype.setWorld = function(world) {

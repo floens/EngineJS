@@ -1,9 +1,13 @@
-(function(global, undefined) {
+(function(global) {
 'use strict';
 
-global.NetHandler = function(connection, system) {
+/**
+ * NetHandler used internally
+ * @param {WebSocket} WebSocket connection
+ * @constructor
+ */
+global.NetHandler = function(connection) {
     this.connection = connection;
-    this.system = system;
 
     this.maxOutboundBytesPerTick = 50000;
     this.maxInboundBytesPerTick = 50000;
@@ -35,16 +39,19 @@ NetHandler.prototype.tick = function() {
 }
 
 NetHandler.prototype.disconnect = function(reason) {
+    if (!this.connected) return;
+
     if (reason != undefined) log('Disconnecting: ' + reason);
 
     try {
-        this.writeConnection(new DisconnectPacket(reason == undefined ? '' : reason))
+        this.writeConnection(new DisconnectPacket(reason == undefined ? '' : reason));
+        // TODO, there is some bug in the WebSocket library that causes the disconnect frame to not be send immediately
         this.connection.close();
     } catch(err) {
         log('Error closing connection.');
+    } finally {
+        this.connected = false;
     }
-
-    this.connected = false;
 }
 
 NetHandler.prototype.getConnected = function() {
@@ -55,9 +62,11 @@ NetHandler.prototype.getConnected = function() {
  * Read from the network
  * Catches errors
  * @param  {string} data raw data
- * @return {Packet OR null} Parsed packet
+ * @return {Packet | null} Parsed packet
  */
 NetHandler.prototype.readConnection = function(data) {
+    if (!this.connected) return;
+
     this.bytesIn += data.length;
 
     var dataStream = new DataStream();

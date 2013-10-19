@@ -1,4 +1,4 @@
-(function(global, undefined) {
+(function(global) {
 'use strict';
 
 global.RemoteClientSystem = function(url, packetHandlerFactoryFunction) {
@@ -6,6 +6,7 @@ global.RemoteClientSystem = function(url, packetHandlerFactoryFunction) {
 
     if (!Utils.isString(url)) throw new Error('First argument must be url to connect to.');
 
+    this.connectError = false;
     this.connected = false;
     this.connection = null;
     this.netHandler = null;
@@ -31,7 +32,16 @@ RemoteClientSystem.prototype.connect = function(url) {
         throw new Error('This browser does not support multiplayer.');
     }
 
-    this.startConnection(url);
+    try {
+        this.startConnection(url);
+    } catch(err) {
+        log(err);
+        this.connectError = true;
+    }
+}
+
+RemoteClientSystem.prototype.getConnectError = function() {
+    return this.connectError;
 }
 
 RemoteClientSystem.prototype.startConnection = function(url) {
@@ -42,7 +52,7 @@ RemoteClientSystem.prototype.startConnection = function(url) {
     var self = this;
     connection.onopen = function(event) {
         self.connected = true;
-        self.netHandler = new NetHandler(connection, self);
+        self.netHandler = new NetHandler(connection);
         self.packetHandler.setNetHandler(self.netHandler);
 
         self.packetHandler.onConnect();
@@ -106,6 +116,7 @@ RemoteClientSystem.prototype.startConnection = function(url) {
         }
         
         if (self.packetHandler != null) {
+            self.packetHandler.onError();
             self.packetHandler.onDisconnect();
             self.packetHandler = null;
         }

@@ -1,4 +1,4 @@
-(function(global, undefined) {
+(function(global) {
 'use strict';
 
 
@@ -61,6 +61,11 @@ Block.STONE = new Block(1).setTexture(1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0);
 Block.DIRT = new Block(2).setTexture(2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0);
 Block.GRASS = new Block(3).setTexture(3, 0, 3, 0, 2, 0, 0, 0, 3, 0, 3, 0);
 Block.COBBLESTONE = new Block(4).setTexture(4, 0, 4, 0, 4, 0, 4, 0, 4, 0, 4, 0);
+Block.PLANKS = new Block(5).setTexture(5, 0, 5, 0, 5, 0, 5, 0, 5, 0, 5, 0);
+Block.BRICK = new Block(6).setTexture(6, 0, 6, 0, 6, 0, 6, 0, 6, 0, 6, 0);
+Block.SAND = new Block(7).setTexture(7, 0, 7, 0, 7, 0, 7, 0, 7, 0, 7, 0);
+Block.GRAVEL = new Block(8).setTexture(8, 0, 8, 0, 8, 0, 8, 0, 8, 0, 8, 0);
+
 
 
 })(global);

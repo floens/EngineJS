@@ -1,4 +1,4 @@
-(function(global, undefined) {
+(function(global) {
 'use strict';
 
 global.Canvas = function(width, height, zIndex) {
@@ -46,16 +46,16 @@ Canvas.prototype.clearRect = function(x, y, w, h) {
 
 /**
  * Fill this canvas with an image
- * @param  {Renderable object} image  Image or Canvas object
+ * @param  {ImageData | HTMLImageElement | HTMLCanvasElement | HTMLVideoElement} image  Image to draw
  * @param  {number}  dx     X destination position
  * @param  {number}  dy     Y destination position
  * @param  {number}  sx     X source position
  * @param  {number}  sy     Y source position
  * @param  {number}  w      Width
  * @param  {number}  h      Height
- * @param  {boolean} flipX  Flip image horizontal
- * @param  {boolean} flipY  Flip image vertical
- * @param  {number}  rotate Radians to rotate
+ * @param  {boolean} [flipX]  Flip image horizontal
+ * @param  {boolean} [flipY]  Flip image vertical
+ * @param  {number}  [rotate] Radians to rotate
  */
 Canvas.prototype.fillImage = function(image, dx, dy, sx, sy, w, h, flipX, flipY, rotate) {
     if (dx + w < 0 || dy + h < 0 || dx > this.width || dy > this.height) return false;
@@ -135,14 +135,15 @@ Canvas.prototype.fillRect = function(x, y, w, h, color) {
     c.fillRect(Math.floor(x), Math.floor(y), Math.floor(w), Math.floor(h));
 }
 
-Canvas.prototype.fillText = function(string, x, y, color, size, align, customFont) {
+Canvas.prototype.fillText = function(string, x, y, color, size, align, verticalAlign, customFont) {
     if (color == undefined) color = '#000';
     if (size  == undefined) size = 14;
     if (align == undefined) align = 'left';
+    if (verticalAlign == undefined) verticalAlign = 'top';
     var c = this.c;
     c.fillStyle = color;
     c.textAlign = align;
-    c.textBaseline = 'top';
+    c.textBaseline = verticalAlign;
     c.font = customFont ? (customFont) : (size + 'px Helvetica, sans-serif');
     c.fillText(string, Math.floor(x), Math.floor(y));
 }

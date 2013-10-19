@@ -1,4 +1,4 @@
-(function(global, undefined) {
+(function(global) {
 'use strict';
 
 global.VoxelChunk = function(gl, renderer, program, world, x, y, z) {

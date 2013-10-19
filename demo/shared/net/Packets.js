@@ -1,4 +1,4 @@
-(function(global, undefined) {
+(function(global) {
 'use strict';
 
 global.ClientPositionPacket = function(x, y, z, yaw, pitch) {

@@ -1,5 +1,6 @@
 module.exports = function(grunt) {
     var clientFiles = [
+        'client/lib/gl-matrix-min.js',
         'client/Setup.js',
         'shared/Utils.js',
         'shared/world/World.js',
@@ -7,6 +8,7 @@ module.exports = function(grunt) {
         'shared/component/Component.js',
         'shared/component/PositionComponent.js',
         'shared/component/RemoteComponent.js',
+        'shared/component/PacketHandlerComponent.js',
         'shared/system/System.js',
         'shared/net/Packet.js',
         'shared/net/DataStream.js',
@@ -20,12 +22,9 @@ module.exports = function(grunt) {
         'client/gfx/GLCanvas.js',
         'client/gfx/GLRenderer.js',
         'client/system/RemoteClientSystem.js',
-        'client/net/PacketHandlerClient.js',
         'client/ui/UIManager.js',
         'client/ui/UI.js',
         'client/ui/UIButton.js',
-        'client/ui/UIMain.js',
-        'client/ui/UIBack.js',
         'client/ui/UIText.js',
         'client/ui/UIAssetLoad.js',
         'client/Storage.js',
@@ -34,22 +33,22 @@ module.exports = function(grunt) {
 
     var serverFiles = [
         'server/Setup.js',
+        'server/EngineServer.js',
         'shared/Utils.js',
         'shared/world/World.js',
         'shared/entity/Entity.js',
         'shared/component/Component.js',
         'shared/component/PositionComponent.js',
         'shared/component/RemoteComponent.js',
+        'shared/component/PacketHandlerComponent.js',
         'shared/system/System.js',
         'shared/net/Packet.js',
         'shared/net/DataStream.js',
         'shared/net/Packets.js',
         'shared/net/NetHandler.js',
         'shared/net/PacketHandler.js',
-        'server/component/PacketHandlerComponent.js',
         'server/system/RemoteServerSystem.js',
-        'server/system/TrackerSystem.js',
-        'server/EngineServer.js'
+        'server/system/TrackerSystem.js'
     ];
 
     var packageJson = grunt.file.readJSON('package.json');

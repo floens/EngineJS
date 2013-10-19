@@ -1,82 +1,121 @@
-(function(global, undefined) {
+(function(global) {
 'use strict';
 
-global.UIButton = function(text, x, y, w, h) {
-    this.text = text;
-    this.x = x;
-    this.y = y;
-    this.w = w;
-    this.h = h;
+global.UIButton = function(text) {
+    this.text = text == undefined ? null : text;
+    this.x = 0;
+    this.y = 0;
+    this.width = 0;
+    this.height = 0;
 
-    this.color = '#000';
-    this.overlayColor = 'rgb(17, 169, 207)';
+    this.textColor = '#000';
+    this.backgroundColor = null;
 
-    this.align = 'center';
-    this.size = 18;
+    this.textAlign = 'center';
+    this.textVerticalAlign = 'middle';
+    this.textSize = 18;
 
-    this.pressed = false;
+    this.clicked = false;
     this.wasDown = false;
     this.wasDownHere = false;
+    this.touch = null;
 }
 
-UIButton.prototype.setColor = function(color) {
+UIButton.prototype.setPosition = function(x, y, width, height) {
+    this.x = x;
+    this.y = y;
+    this.width = width;
+    this.height = height;
+}
+
+UIButton.prototype.setTextColor = function(color) {
     this.color = color;
+    return this;
 }
 
-UIButton.prototype.setOverlayColor = function(color) {
-    this.overlayColor = color;
+UIButton.prototype.setBackgroundColor = function(color) {
+    this.backgroundColor = color;
+    return this;
 }
 
-UIButton.prototype.setAlign = function(align) {
-    this.align = align;
+UIButton.prototype.setTextAlign = function(align) {
+    this.textAlign = align;
+    return this;
 }
 
-UIButton.prototype.setSize = function(size) {
-    this.size = size;
+UIButton.prototype.setTextVerticalAlign = function(align) {
+    this.textVerticalAlign = align;
+    return this;
+}
+
+UIButton.prototype.setTextSize = function(textSize) {
+    this.textSize = textSize;
+    return this;
 }
 
 UIButton.prototype.render = function(c) {
-    var x = this.align == 'center' ? this.x - c.measureText(this.text, this.size) / 2 : this.x;
+    if (this.backgroundColor != null) {
+        c.fillRect(this.x, this.y, this.width, this.height, this.backgroundColor);
+    }
 
-    if (this.getMouseOver()) {
-        c.fillText(this.text, x, this.y, this.overlayColor, this.size);
-    } else {
-        c.fillText(this.text, x, this.y, this.color, this.size);
+    if (this.text != null) {
+        c.fillText(this.text, this.x + this.width / 2, this.y + this.height / 2, this.color, this.textSize, this.textAlign, this.textVerticalAlign);
     }
 }
 
-UIButton.prototype.getMouseOver = function() {
-    var mx = Input.getMousePosition()[0],
-        my = Input.getMousePosition()[1];
-
-    var x = this.align == 'center' ? this.x - Canvas.measureText(this.text, this.size) / 2 : this.x;
-    if (mx < x || mx > x + this.w || my < this.y || my > this.y + this.h) return false;
-    return true;
+UIButton.prototype.getHovered = function() {
+    return (this.touch != null && this.getTouchOver(this.touch)) || this.getCursorOver();
 }
 
-UIButton.prototype._getMousePressed = function() {
-    return Input.getMousePressed(Input.BUTTON_LEFT);
+UIButton.prototype.getCursorOver = function() {
+    var pos = Input.getMousePosition();
+    return (pos.x > this.x && pos.x < this.x + this.width && pos.y > this.y && pos.y < this.y + this.height);
+}
+
+UIButton.prototype.getTouchOver = function(touch) {
+    return (touch.x > this.x && touch.x < this.x + this.width && touch.y > this.y && touch.y < this.y + this.height);
 }
 
 UIButton.prototype.getClicked = function() {
-    return this.pressed;
+    return this.clicked;
 }
 
-UIButton.prototype.update = function() {
-    this.mouseover = this.getMouseOver();
+UIButton.prototype.tick = function() {
+    if (Input.getHadTouchOnce()) {
+        var touchList = Input.getTouches();
 
-    var down = this._getMousePressed();
-    if (!this.wasDown && down) {
-        this.wasDown = true;
-        if (this.getMouseOver()) {
-            this.wasDownHere = true;
+        if (touchList.length > 0 && this.touch == null) {
+            for (var i = 0; i < touchList.length; i++) {
+                var e = touchList[i];
+                if (this.getTouchOver(e)) {
+                    this.touch = e;
+                }
+            }
+        } else if (touchList.length == 0 && this.touch != null) {
+            if (this.getTouchOver(this.touch)) {
+                this.clicked = true;
+            }
+
+            this.touch = null;
+        } else {
+            this.clicked = false;
         }
-    } else if (this.wasDown && !down) {
-        if (this.wasDownHere && this.getMouseOver()) {
-            this.pressed = true;
+    } else {
+        this.mouseover = this.getCursorOver();
+
+        var down = Input.getMousePressed(Input.BUTTON_LEFT);
+        if (down != this.wasDown) {
+            if (down) {
+                this.wasDownHere = this.getCursorOver();
+            } else {
+                if (this.wasDownHere && this.getCursorOver()) {
+                    this.clicked = true;
+                }
+            }
+            this.wasDown = down;
+        } else {
+            this.clicked = false;
         }
-        this.wasDown = false;
-        this.wasDownHere = false;
     }
 }
 

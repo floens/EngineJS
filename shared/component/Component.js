@@ -1,6 +1,11 @@
-(function(global, undefined) {
+(function(global) {
 'use strict';
 
+/**
+ * Create a new component
+ * @class Component
+ * @constructor
+ */
 global.Component = function() {
 
 }

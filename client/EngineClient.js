@@ -1,4 +1,4 @@
-(function(global, undefined) {
+(function(global) {
 'use strict';
 /**
  *     ______            _          
@@ -264,22 +264,22 @@ global.onerror = function(err, file, line) {
 var _crashed = false;
 /**
  * Handle global error by creating a screen for the user with a crash message
- * @param  {Error or String} err
- * @param  {String or undefined} file
- * @param  {String or undefined} line
- * @param  {Stacktrace or undefined} stack
+ * @param  {Error | String} error
+ * @param  {String} [file]
+ * @param  {String} [line]
+ * @param  {Stacktrace} [stack]
  */
-Engine.handleError = function(err, file, line, stack) {
+Engine.handleError = function(error, file, line, stack) {
     if (_crashed) return;
 
     if (!Screen.containerElement) return;
     _crashed = true;
     _reset();
 
-    if (err instanceof Error) {
-        file = err.fileName || '';
-        line = err.lineNumber || '';
-        stack = err.stack || '';
+    if (error instanceof Error) {
+        file = error.fileName || '';
+        line = error.lineNumber || '';
+        stack = error.stack || '';
     } else {
         if (file == undefined) file = '';
         if (line == undefined) line = '';
@@ -301,7 +301,7 @@ Engine.handleError = function(err, file, line, stack) {
 
     elem.appendChild(title);
 
-    if (stack == '') elem.innerHTML += err;
+    if (stack == '') elem.innerHTML += error;
     if (file != '' && line != '') elem.innerHTML += '<br><br>' + file + ':' + line + '.'; 
     if (stack != '') elem.innerHTML += stack.replace(/\n/g, '<br>&nbsp;&nbsp;&nbsp;&nbsp;');
 

@@ -1,4 +1,4 @@
-(function(global, undefined) {
+(function(global) {
 'use strict';
 
 global.PacketHandlerServer = function() {
@@ -66,9 +66,12 @@ PacketHandlerServer.prototype.handlePacket = function(packet) {
             case BlockChangePacket.id:
                 var change = this.entity.getComponent(BlockChangeComponent);
 
-                change.addChange(packet.x, packet.y, packet.z, packet.a);
+                var id = Math.max(0, Math.min(100, packet.a));
+                if (Block[id] == null) return;
 
-                this.entity.getComponent(PacketHandlerComponent).addBroadcast(new BlockChangePacket(packet.x, packet.y, packet.z, packet.a));
+                change.addChange(packet.x, packet.y, packet.z, id);
+
+                this.entity.getComponent(PacketHandlerComponent).addBroadcast(new BlockChangePacket(packet.x, packet.y, packet.z, id));
 
                 break;
         }

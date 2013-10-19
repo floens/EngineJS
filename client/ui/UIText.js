@@ -1,4 +1,4 @@
-(function(global, undefined) {
+(function(global) {
 'use strict';
 
 /*****
@@ -18,7 +18,7 @@ UIText.prototype.render = function() {
 
     this.canvas.clear();
 
-    this.canvas.fillText(this.displayText, this.w / 2, this.h / 2 - 20, this.color, 18, 'center');
+    this.canvas.fillText(this.displayText, this.width / 2, this.height / 2 - 9, this.color, 18, 'center');
 }
 
 })(global);

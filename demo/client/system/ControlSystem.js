@@ -1,4 +1,4 @@
-(function(global, undefined) {
+(function(global) {
 'use strict';
 
 global.ControlSystem = function(world) {
@@ -40,16 +40,26 @@ ControlSystem.prototype.tick = function() {
 ControlSystem.prototype.processEntity = function(entity) {
     var pos = entity.getComponent(PlayerPositionComponent);
     var packetHandler = entity.hasComponent(PacketHandlerComponent) ? entity.getComponent(PacketHandlerComponent) : null;
+    var control = entity.getComponent(ControlComponent);
 
     this.processLook(pos);
     this.processMove(pos);
+    this.processSelector(control);
 
     if (entity.hasComponent(BlockChangeComponent)) {
-        this.processDigging(pos, entity.getComponent(BlockChangeComponent), packetHandler);
+        this.processDigging(pos, entity.getComponent(BlockChangeComponent), packetHandler, control);
     }
 }
 
-ControlSystem.prototype.processDigging = function(pos, change, packetHandler) {
+ControlSystem.prototype.processSelector = function(control) {
+    var scroll = -Input.getMouseScroll();
+
+    while (scroll < 0) scroll += control.barCount;
+
+    control.barIndex = scroll % control.barCount;
+}
+
+ControlSystem.prototype.processDigging = function(pos, change, packetHandler, control) {
     var destroy = Input.getMousePressed(Input.BUTTON_LEFT);
     var place = Input.getMousePressed(Input.BUTTON_RIGHT);
 
@@ -89,11 +99,12 @@ ControlSystem.prototype.processDigging = function(pos, change, packetHandler) {
                 }
 
                 if (this.world.getTile(tx, ty, tz) == Block.AIR.id) {
-                    change.addChange(tx, ty, tz, Block.STONE.id);
+                    var blockId = control.barBlocks[control.barIndex];
+                    change.addChange(tx, ty, tz, blockId);
                     change.addChange(x, y, z, -1);
 
                     if (packetHandler != null) {
-                        packetHandler.packetHandler.sendPacket(new BlockChangePacket(tx, ty, tz, Block.STONE.id));
+                        packetHandler.packetHandler.sendPacket(new BlockChangePacket(tx, ty, tz, blockId));
                     }
                 }
             }

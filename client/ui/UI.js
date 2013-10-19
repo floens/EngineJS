@@ -1,10 +1,10 @@
-(function(global, undefined) {
+(function(global) {
 'use strict';
 
 global.UI = function() {
-    this.w = Screen.width;
-    this.h = Screen.height;
-    this.canvas = new Canvas(this.w, this.h, 80);
+    this.width = Screen.width;
+    this.height = Screen.height;
+    this.canvas = new Canvas(this.width, this.height, 80);
 }
 
 UI.prototype.onRemove = function() {
@@ -12,9 +12,9 @@ UI.prototype.onRemove = function() {
 }
 
 UI.prototype.onResize = function() {
-    this.w = Screen.width;
-    this.h = Screen.height;
-    this.canvas.setDimensions(this.w, this.h);
+    this.width = Screen.width;
+    this.height = Screen.height;
+    this.canvas.setDimensions(this.width, this.height);
 }
 
 UI.prototype.render = function() {
