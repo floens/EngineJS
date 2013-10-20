@@ -4,7 +4,7 @@
 /**
  * PacketHandlerComponent takes a PacketHandler as first argument. 
  * It allows you to send packets to clients without having a reference to the packethandler.
- * TrackerSystem listens to this component.
+ * TrackerSystem listens to this component and sends the packets.
  * 
  * @param {PacketHandler} packetHandler
  * @class PacketHandlerComponent

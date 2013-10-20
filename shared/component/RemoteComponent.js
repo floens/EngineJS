@@ -4,7 +4,7 @@
 /**
  * Extend components from RemoteComponent if you want changed data to be 
  * automatically synced to all connected clients having your component.
- * Implement copy, set, compare, readStream and writeStream in your component.
+ * Implement copy, set, compare, readStream and writeStream.
  * It's server to client only for now.
  * @class RemoteComponent
  * @constructor

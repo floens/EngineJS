@@ -1,6 +1,11 @@
 (function(global) {
 'use strict';
 
+/**
+ * DataStream is a wrapper around reading data from a websocket connection.
+ * @class DataStream
+ * @constructor
+ */
 global.DataStream = function() {
     this._currentIndex = 0;
     this._data = [];
@@ -9,6 +14,7 @@ global.DataStream = function() {
 /**
  * Append a number to this stream
  * @param  {number} number
+ * @method writeNumber
  */
 DataStream.prototype.writeNumber = function(number) {
     if (!Utils.isNumber(number)) throw new Error('Not a number.');
@@ -18,6 +24,7 @@ DataStream.prototype.writeNumber = function(number) {
 /**
  * Append a string to this stream
  * @param  {string} string
+ * @method writeString
  */
 DataStream.prototype.writeString = function(string) {
     if (!Utils.isString(string)) throw new Error('Not a string.');
@@ -28,6 +35,7 @@ DataStream.prototype.writeString = function(string) {
 /**
  * Read the next element as a number, throws if it isn't a number
  * @return {number}
+ * @method readNumber
  */
 DataStream.prototype.readNumber = function() {
     if (!this.hasNext()) throw new Error('No more data.');
@@ -44,6 +52,7 @@ DataStream.prototype.readNumber = function() {
 /**
  * Read the next element as a string, throws if it isn't a string
  * @return {string}
+ * @method readString
  */
 DataStream.prototype.readString = function() {
     if (!this.hasNext()) throw new Error('No more data.');
@@ -57,6 +66,10 @@ DataStream.prototype.readString = function() {
     return element;
 }
 
+/**
+ * @method hasNext
+ * @return {Boolean} true if there is a next value, false otherwise
+ */
 DataStream.prototype.hasNext = function() {
     return this._currentIndex < this._data.length;
 }
@@ -69,6 +82,7 @@ DataStream.prototype.setIndex = function(e) {
 /**
  * Set raw data to this stream. Internal usage.
  * @param {string} data
+ * @method setData
  */
 DataStream.prototype.setData = function(data) {
     var list = null;
@@ -98,6 +112,7 @@ DataStream.prototype.setData = function(data) {
 /**
  * Read the written data as a string to send away. Internal usage.
  * @return {string}
+ * @method getData
  */
 DataStream.prototype.getData = function() {
     // TODO: Not possible?

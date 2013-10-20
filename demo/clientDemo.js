@@ -11,8 +11,6 @@ var _packetHandler;
 var _renderSystem;
 
 Engine.load(function() {
-    // Input.setFullscreen(true);
-
     AssetManager.loadFile('shaders/worldVertex.txt', 'worldVertex');
     AssetManager.loadFile('shaders/worldFragment.txt', 'worldFragment');
     AssetManager.loadFile('shaders/modelVertex.txt', 'modelVertex');
@@ -36,7 +34,7 @@ var start = function() {
     Engine.tick(tick);
     Engine.render(render);
 
-    StartMultiplayer('192.168.6.151:8080');
+    // StartMultiplayer('127.0.0.1:8080');
 }
 
 global.StartMultiplayer = function(value) {
