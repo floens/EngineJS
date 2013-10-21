@@ -33,6 +33,8 @@ var start = function() {
 
     Engine.tick(tick);
     Engine.render(render);
+
+    // WebCraft.startSinglePlayer();
 }
 
 global.WebCraft = {};
@@ -53,8 +55,6 @@ WebCraft.startMultiPlayer = function(url) {
 
         UIManager.set(new UIText('Connecting', '#ffffff'));
     }
-
-    global.world = _world;
 }
 
 WebCraft.startSinglePlayer = function() {
@@ -62,11 +62,22 @@ WebCraft.startSinglePlayer = function() {
 
     WebCraft.world = _world;
 
-    var player = WebCraft.startGame(64, 64, 64, null);
+    var player = WebCraft.startGame(32, 32, 32, null);
     player.add();
+
+    for (var i = 0; i < 1; i++) {
+        var particle = new EntityParticle(_world);
+        var pos = particle.getComponent(PlayerPositionComponent);
+        pos.x = 2;
+        pos.y = 23;
+        pos.z = 2;
+        particle.add();
+    }
 }
 
 WebCraft.startGame = function(width, height, depth, tileArray) {
+    global.world = _world;
+
     // UIManager.set(new UIGame());
     UIManager.set(null);
     Input.setPointerLocked(true);
@@ -83,6 +94,7 @@ WebCraft.startGame = function(width, height, depth, tileArray) {
         voxelWorld.tileArray = tileArray;
     }
 
+    _world.addSystem(new ParticleSystem());
     _world.addSystem(voxelWorld);
     _world.addSystem(new MovementSystem(voxelWorld));
     _world.addSystem(new ControlSystem(voxelWorld));
@@ -98,13 +110,7 @@ WebCraft.startGame = function(width, height, depth, tileArray) {
 
 WebCraft.stopGame = function() {
     if (_world == null) return;
-    _world.clearEntities();
-    _world.removeSystem(CameraSystem);
-    _world.removeSystem(ModelRenderer);
-    _world.removeSystem(VoxelRenderer);
-    _world.removeSystem(VoxelWorld);
-    _world.removeSystem(MovementSystem);
-    _world.removeSystem(ControlSystem);
+    _world.remove();
     _world = null;
 
     _packetHandler = null;

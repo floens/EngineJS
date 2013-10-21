@@ -19,6 +19,13 @@ MovementSystem.prototype.tick = function() {
 
 MovementSystem.prototype.processEntity = function(entity) {
     var pos = entity.getComponent(PlayerPositionComponent);
+
+    // TODO
+    if (!(entity instanceof EntityPlayer)) {
+        pos.ya -= pos.gravity;
+        pos.xa *= pos.deceleration;
+        pos.za *= pos.deceleration;
+    }
     
     var xa = pos.xa;
     var ya = pos.ya;

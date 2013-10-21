@@ -49,6 +49,12 @@ VoxelRenderer.prototype.setVoxelWorld = function(voxelWorld) {
     }
 }
 
+VoxelRenderer.prototype.onRemove = function() {
+    for (var i = 0; i < this.chunkList.length; i++) {
+        this.chunkList[i].destroy();
+    }
+}
+
 VoxelRenderer.prototype.setProjection = function() {
     this.renderer.setProjection(70 * (Math.PI / 180), 0.001, 1000);
 }

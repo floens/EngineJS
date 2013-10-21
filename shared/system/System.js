@@ -4,10 +4,16 @@
 global.System = function() {
     this._loopType = System.TICK_LOOP;
 
+    this._world = null;
+
     this.aspects = [];
     this.orAspects = [];
 
     this.entities = [];
+}
+
+System.prototype.getWorld = function() {
+    return this._world;
 }
 
 System.prototype._tryAddEntity = function(entity) {
@@ -20,7 +26,7 @@ System.prototype._tryAddEntity = function(entity) {
 
 System.prototype._tryRemoveEntity = function(entity) {
     for (var i = 0; i < this.entities.length; i++) {
-        if (this.entities[i].sessionId == entity.sessionId) {
+        if (this.entities[i] == entity) {
             this.entities.splice(i, 1);
 
             this.removeEntity(entity);

@@ -21,6 +21,26 @@ World.prototype.tick = function() {
     this.tickCount++;
 }
 
+/**
+ * Call this if the world is about to be deleted.
+ * Clears entities, systems and calls the appropiate onRemove.
+ */
+World.prototype.remove = function() {
+    for (var i = 0; i < this.entities.length; i++) {
+        var entity = this.entities[i];
+        var components = entity.components;
+        var keys = components.keys();
+        for (var k = 0; k < keys.length; k++) {
+            components.get(keys[k]).onRemove();
+        }
+        entity.onRemove();
+    }
+
+    for (var i = 0; i < this.systems.length; i++) {
+        this.systems[i].onRemove();
+    }
+}
+
 // Process all systems on the render loop
 World.prototype.render = function() {
     var list = this.systems;
@@ -49,6 +69,7 @@ World.prototype.addSystem = function(system) {
     if (!(system instanceof System)) throw new Error('Not a System.');
     this.systems.push(system);
     this.systemIdMap.set(system.id, system);
+    system._world = this;
 }
 
 /**
@@ -94,7 +115,9 @@ World.prototype.addEntity = function(entity) {
         entity.setSessionId(++this.sessionIdCounter);
     }
 
-    this.entitySessionIdMap.set(entity.sessionId, entity);
+    if (entity.sessionId > 0) {
+        this.entitySessionIdMap.set(entity.sessionId, entity);
+    }
 
     for (var i = 0; i < this.systems.length; i++) {
         this.systems[i]._tryAddEntity(entity);
@@ -106,7 +129,15 @@ World.prototype._removeEntities = function() {
         if (this.entities[i].removed) {
             var entity = this.entities[i];
 
-            if (entity.sessionId >= 0) {
+            var components = entity.components;
+            var keys = components.keys();
+            for (var k = 0; k < keys.length; k++) {
+                components.get(keys[k]).onRemove();
+            }
+
+            entity.onRemove();
+
+            if (entity.sessionId > 0) {
                 this.entitySessionIdMap.remove(entity.sessionId);
             }
 
@@ -117,12 +148,6 @@ World.prototype._removeEntities = function() {
                 this.systems[j]._tryRemoveEntity(entity);
             }
         }
-    }
-}
-
-World.prototype.clearEntities = function() {
-    for (var i = 0; i < this.entities.length; i++) {
-        this.entities[i].remove();
     }
 }
 

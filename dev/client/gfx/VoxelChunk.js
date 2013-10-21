@@ -33,9 +33,15 @@ VoxelChunk.prototype.render = function() {
     this.renderer.popMatrix();
 }
 
+VoxelChunk.prototype.destroy = function() {
+    if (this.buffer != null) {
+        this.buffer.destroy();
+    }
+}
+
 VoxelChunk.prototype.makeBuffer = function() {
     if (this.buffer != null) {
-        this.gl.deleteBuffer(this.buffer.buffer);
+        this.buffer.destroy();
     }
 
     this.buffer = new Renderable(this.gl, 2000000);

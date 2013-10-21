@@ -22,6 +22,7 @@ global.PlayerPositionComponent = function() {
     this.maxSpeed = 0.3;
     this.acceleration = 0.01;
     this.deceleration = 0.85;
+    this.gravity = 0.007;
 
     this.yaw = 0;
     this.pitch = 0;

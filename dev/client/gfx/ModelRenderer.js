@@ -7,6 +7,7 @@ global.ModelRenderer = function(canvas) {
     this.setLoopType(System.RENDER_LOOP);
     this.addOrAspect(CameraComponent);
     this.addOrAspect(PlayerModel);
+    this.addOrAspect(ParticleModel);
 
     this.renderer = new GLRenderer(canvas);
     this.gl = canvas.gl;
@@ -77,11 +78,17 @@ ModelRenderer.prototype.tick = function() {
 
         for (var i = 0; i < this.entities.length; i++) {
             var e = this.entities[i];
-            
-            if (e.hasComponent(PlayerModel) && e.hasComponent(PlayerPositionComponent)) {
-                var playerModel = e.getComponent(PlayerModel);
+                
+            if (e.hasComponent(PlayerPositionComponent)) {
                 var pos = e.getComponent(PlayerPositionComponent);
-                playerModel.render(this.gl, this.renderer, this.program, pos);
+
+                if (e.hasComponent(PlayerModel)) {
+                    var playerModel = e.getComponent(PlayerModel);
+                    playerModel.render(this.gl, this.renderer, this.program, pos);
+                } else if (e.hasComponent(ParticleModel)) {
+                    var model = e.getComponent(ParticleModel);
+                    model.render(this.gl, this.renderer, this.program, this.camera, pos);
+                }
             }
         }
 

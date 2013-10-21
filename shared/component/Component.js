@@ -7,7 +7,17 @@
  * @constructor
  */
 global.Component = function() {
+    this._world = null;
+}
 
+Component.prototype.getWorld = function() {
+    return this._world;
+}
+
+/**
+ * Called when component is removed from the entity.
+ */
+Component.prototype.onRemove = function() {
 }
 
 Component.prototype.toString = function() {

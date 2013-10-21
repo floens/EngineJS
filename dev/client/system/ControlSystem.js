@@ -12,7 +12,6 @@ global.ControlSystem = function(world) {
     this.world = world;
 
     this.rotateSpeed = 0.005;
-    this.gravity = 0.007;
 
     this.lastMouseX = 0;
     this.lastMouseY = 0;
@@ -190,7 +189,7 @@ ControlSystem.prototype.processMove = function(pos) {
         pos.ya += pos.jump;
     }
 
-    pos.ya -= this.gravity;
+    pos.ya -= pos.gravity;
 }
 
 ControlSystem.prototype.processLook = function(pos) {

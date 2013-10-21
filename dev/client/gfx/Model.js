@@ -65,6 +65,10 @@ Model.prototype.render = function() {
     }
 }
 
+Model.prototype.remove = function() {
+    this.buffer.destroy();
+}
+
 Model.prototype.createTexture = function(image) {
     this.gl.activeTexture(this.gl.TEXTURE0);
     

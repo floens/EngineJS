@@ -65,6 +65,7 @@ Entity.prototype.hasComponent = function(component) {
 Entity.prototype.addComponent = function(component) {
     if (this.components.has(component.id)) throw new Error('Entity: Component already added.');
     this.components.set(component.id, component);
+    component._world = this.world;
 }
 
 /**
@@ -77,6 +78,12 @@ Entity.prototype.getComponent = function(component) {
     var value = this.components.get(component.id);
     if (value == null) throw new Error('Entity: Component not found on this entity.');
     return value;
+}
+
+/**
+ * Called when the entity is removed from the world.
+ */
+Entity.prototype.onRemove = function() {
 }
 
 Entity.prototype.toString = function() {
