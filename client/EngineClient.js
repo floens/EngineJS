@@ -77,8 +77,6 @@ var _init = function() {
     // Shows error and abandons execution
     if (!_checkBrowserRequirements()) return;
 
-    log('Initializing.');
-
     if (Utils.isNumber(_loadOptions.minWidth)) _minWidth = _loadOptions.minWidth;
     if (Utils.isNumber(_loadOptions.minHeight)) _minHeight = _loadOptions.minHeight;
     if (Utils.isNumber(_loadOptions.maxWidth)) _maxWidth = _loadOptions.maxWidth;

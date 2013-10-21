@@ -16,7 +16,7 @@ global.World = function(width, height) {
 World.prototype.tick = function() {
     this.tickSystems();
     
-    this.removeEntities();
+    this._removeEntities();
 
     this.tickCount++;
 }
@@ -60,6 +60,7 @@ World.prototype.removeSystem = function(system) {
     var wasRemoved = false;
     for (var i = 0; i < this.systems.length; i++) {
         if (this.systems[i].id == system.id) {
+            this.systems[i].onRemove();
             this.systems.splice(i, 1);
             this.systemIdMap.remove(system.id);
             wasRemoved = true;
@@ -100,7 +101,7 @@ World.prototype.addEntity = function(entity) {
     }
 }
 
-World.prototype.removeEntities = function() {
+World.prototype._removeEntities = function() {
     for (var i = 0; i < this.entities.length; i++) {
         if (this.entities[i].removed) {
             var entity = this.entities[i];

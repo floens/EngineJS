@@ -22,7 +22,7 @@ PacketHandlerClient.prototype.handlePacket = function(packet) {
             if (entity instanceof EntityPlayer) {
                 entity.addComponent(new PlayerModel());
             }
-            
+
             entity.add();
 
             break;
@@ -60,21 +60,10 @@ PacketHandlerClient.prototype.handlePacket = function(packet) {
 }
 
 PacketHandlerClient.prototype.onLogin = function(width, height, depth, tileArray) {
-    var voxelWorld = new VoxelWorld(width, height, depth);
-    voxelWorld.tileArray = tileArray;
+    this.setEntity(WebCraft.startGame(width, height, depth, tileArray));
 
-    this.world.addSystem(voxelWorld);
-    this.world.addSystem(new MovementSystem(voxelWorld));
-    this.world.addSystem(new ControlSystem(voxelWorld));
-    this.world.getSystem(VoxelRenderer).setVoxelWorld(voxelWorld);
-
-    this.entity = new EntityPlayer(this.world);
     this.entity.addComponent(new PacketHandlerComponent(this));
     this.entity.setSessionId(0);
-    this.entity.addComponent(new CameraComponent());
-    this.entity.addComponent(new ControlComponent());
-    this.entity.getComponent(PlayerPositionComponent).y = 22;
-    this.entity.getComponent(PlayerPositionComponent).yaw = Math.PI * 3 / 4;
     this.entity.add();
 }
 
@@ -89,12 +78,10 @@ PacketHandlerClient.prototype.onConnect = function() {
 PacketHandlerClient.prototype.onDisconnect = function() {
     log('Disconnected');
 
-    UIManager.set(new UIText('Disconnected' + (this.disconnectReason.length > 0 ? ': ' + this.disconnectReason : ''), '#ffffff'));
+    WebCraft.stopGame();
 
-    this.world.clearEntities();
-    this.world.removeSystem(MovementSystem);
-    this.world.removeSystem(ControlSystem);
-    this.world.getSystem(VoxelRenderer).setVoxelWorld(null);
+    UIManager.set(new UIText('Disconnected' + 
+        (this.disconnectReason.length > 0 ? ': ' + this.disconnectReason : ''), '#ffffff'));
 }
 
 PacketHandlerClient.prototype.onError = function() {
@@ -103,6 +90,10 @@ PacketHandlerClient.prototype.onError = function() {
 
 PacketHandlerClient.prototype.setWorld = function(world) {
     this.world = world;
+}
+
+PacketHandlerClient.prototype.setEntity = function(entity) {
+    this.entity = entity;
 }
 
 })(global);

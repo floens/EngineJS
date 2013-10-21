@@ -81,7 +81,6 @@ ModelRenderer.prototype.tick = function() {
             if (e.hasComponent(PlayerModel) && e.hasComponent(PlayerPositionComponent)) {
                 var playerModel = e.getComponent(PlayerModel);
                 var pos = e.getComponent(PlayerPositionComponent);
-
                 playerModel.render(this.gl, this.renderer, this.program, pos);
             }
         }

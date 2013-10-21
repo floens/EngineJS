@@ -106,7 +106,7 @@ Input.getKeyPressed = function(name) {
 
 // Only returns true once when called until the key is lifted again
 Input.getKeyPressedOnce = function(name) {
-    var keyPressed = Input.isKeyPressed(name);
+    var keyPressed = Input.getKeyPressed(name);
 
     if (keyPressed && _pressedKeysOnce[name] == undefined) {
         _pressedKeysOnce[name] = true;

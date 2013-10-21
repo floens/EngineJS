@@ -49,6 +49,8 @@ Engine.load(function() {
 
     _world.addSystem(voxelWorld);
     _world.addSystem(new MovementSystem(voxelWorld));
+    
+    log('Started server on localhost:8080');
 })
 
 Engine.tick(function() {

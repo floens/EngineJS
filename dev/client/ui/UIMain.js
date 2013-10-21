@@ -20,8 +20,12 @@ UIMain.prototype.tick = function() {
     this.singlePlayer.tick();
     this.multiPlayer.tick();
 
+    if (this.singlePlayer.getClicked()) {
+        WebCraft.startSinglePlayer();
+    }
+
     if (this.multiPlayer.getClicked()) {
-        UIManager.set(new MultiPlayerSelect('192.168.6.151:8080'));
+        UIManager.set(new MultiPlayerSelect('localhost:8080'));
     }
 }
 
@@ -72,7 +76,7 @@ MultiPlayerSelect.prototype.tick = function() {
     }
 
     if (this.ok.getClicked() || Input.getKeyPressed('enter')) {
-        StartMultiplayer(this.form.getValue());
+        WebCraft.startMultiPlayer(this.form.getValue());
 
         this.form.remove();
     }
@@ -94,5 +98,66 @@ MultiPlayerSelect.prototype.render = function() {
     this.ok.render(this.canvas);
 }
 
+
+/*global.UIGame = function() {
+    UI.call(this);
+
+    this.visible = false;
+    this.lockTime = 60;
+
+    this.resume = new UIButton('Resume').setTextColor('#eee');
+    this.stop = new UIButton('Stop').setTextColor('#eee');
+}
+UIGame.extend(UI);
+
+UIGame.prototype.onResize = function() {
+    this.parent.onResize.call(this);
+
+    var width = Math.min(this.width * 0.8, 400);
+
+    this.resume.setPosition(this.width / 2 - width / 2, this.height / 2 - 20, width / 2 - 5, 40);
+    this.stop.setPosition(this.width / 2 + 5, this.height / 2 - 20, width / 2 - 5, 40);
+}
+
+UIGame.prototype.tick = function() {
+    this.lockTime--;
+
+    if (this.lockTime > 0) return;
+
+    this.visible = !Input.getPointerLocked();
+
+    if (this.visible) {
+        Input.setPointerLocked(false);
+    }
+
+    this.resume.tick();
+    if (this.visible && this.resume.getClicked()) {
+        Input.setPointerLocked(true);
+        this.visible = false;
+        this.lockTime = 60;
+    }
+
+    this.stop.tick();
+    if (this.visible && this.stop.getClicked()) {
+        WebCraft.stopGame();
+    }
+}
+
+UIGame.prototype.render = function() {
+    this.canvas.clear();
+
+    if (this.visible) {
+        this.canvas.fillRect(this.stop.x, this.stop.y, this.stop.width, this.stop.height, 
+            this.stop.getHovered() ? '#aaa' : '#777');
+
+        this.stop.render(this.canvas);
+
+        this.canvas.fillRect(this.resume.x, this.resume.y, this.resume.width, this.resume.height, 
+            this.resume.getHovered() ? '#aaa' : '#777');
+
+        this.resume.render(this.canvas);
+    }
+}
+*/
 
 })(global);

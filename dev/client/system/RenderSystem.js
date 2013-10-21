@@ -60,8 +60,14 @@ RenderSystem.prototype.tick = function() {
 
     this.renderControls();
 
-    this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
     this.gl.clearColor(0.7, 0.8, 1.0, 1.0);
+    this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
+}
+
+RenderSystem.prototype.clear = function() {
+    this.gl.clearColor(0, 0, 0, 1);
+    this.gl.clear(this.gl.COLOR_BUFFER_BIT);
+    this.uiCanvas.clear();
 }
 
 RenderSystem.prototype.renderControls = function() {

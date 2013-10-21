@@ -42,8 +42,6 @@ Engine.resume = function() {
 }
 
 var _init = function() {
-    log('Initializing.');
-
     _tickLoop();
 
     // Start the user's load function

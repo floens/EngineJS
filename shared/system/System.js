@@ -32,14 +32,22 @@ System.prototype._tryRemoveEntity = function(entity) {
 }
 
 /**
- * To be overriden
+ * Called if a system is about to be removed from the world.
+ * To be overridden.
+ */
+System.prototype.onRemove = function() {
+    
+}
+
+/**
+ * To be overridden.
  * @param {Entity} entity
  */
 System.prototype.addEntity = function(entity) {
 }
 
 /**
- * To be overridden
+ * To be overridden.
  * @param  {Entity} entity 
  */
 System.prototype.removeEntity = function(entity) {

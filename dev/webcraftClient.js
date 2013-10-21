@@ -33,18 +33,13 @@ var start = function() {
 
     Engine.tick(tick);
     Engine.render(render);
-
-    // StartMultiplayer('127.0.0.1:8080');
 }
 
-global.StartMultiplayer = function(value) {
+global.WebCraft = {};
+WebCraft.startMultiPlayer = function(url) {
     _world = new World();
-    _world.addSystem(_renderSystem);
-    _world.addSystem(new CameraSystem());
-    _world.addSystem(new ModelRenderer(_renderSystem.canvas));
-    _world.addSystem(new VoxelRenderer(_renderSystem.canvas));
 
-    var remoteSystem = new RemoteClientSystem('ws://' + value, function() {
+    var remoteSystem = new RemoteClientSystem('ws://' + url, function() {
         _packetHandler = new PacketHandlerClient();
         _packetHandler.setWorld(_world);
         return _packetHandler;
@@ -57,9 +52,66 @@ global.StartMultiplayer = function(value) {
         _world.addSystem(remoteSystem);
 
         UIManager.set(new UIText('Connecting', '#ffffff'));
-
-        Input.setPointerLocked(true);
     }
+
+    global.world = _world;
+}
+
+WebCraft.startSinglePlayer = function() {
+    _world = new World();
+
+    WebCraft.world = _world;
+
+    var player = WebCraft.startGame(64, 64, 64, null);
+    player.add();
+}
+
+WebCraft.startGame = function(width, height, depth, tileArray) {
+    // UIManager.set(new UIGame());
+    UIManager.set(null);
+    Input.setPointerLocked(true);
+
+    _world.addSystem(_renderSystem);
+    _world.addSystem(new CameraSystem());
+    _world.addSystem(new ModelRenderer(_renderSystem.canvas));
+    _world.addSystem(new VoxelRenderer(_renderSystem.canvas));
+
+    var voxelWorld = new VoxelWorld(width, height, depth);
+    if (tileArray == null) {
+        voxelWorld.generate();
+    } else {
+        voxelWorld.tileArray = tileArray;
+    }
+
+    _world.addSystem(voxelWorld);
+    _world.addSystem(new MovementSystem(voxelWorld));
+    _world.addSystem(new ControlSystem(voxelWorld));
+    _world.getSystem(VoxelRenderer).setVoxelWorld(voxelWorld);
+
+    var entity = new EntityPlayer(_world);
+    entity.addComponent(new CameraComponent());
+    entity.addComponent(new ControlComponent());
+    entity.getComponent(PlayerPositionComponent).y = 22;
+    entity.getComponent(PlayerPositionComponent).yaw = Math.PI * 3 / 4;
+    return entity;
+}
+
+WebCraft.stopGame = function() {
+    if (_world == null) return;
+    _world.clearEntities();
+    _world.removeSystem(CameraSystem);
+    _world.removeSystem(ModelRenderer);
+    _world.removeSystem(VoxelRenderer);
+    _world.removeSystem(VoxelWorld);
+    _world.removeSystem(MovementSystem);
+    _world.removeSystem(ControlSystem);
+    _world = null;
+
+    _packetHandler = null;
+
+    _renderSystem.clear();
+    UIManager.set(new UIMain());
+    Input.setPointerLocked(false);
 }
 
 var _lx = 0;
@@ -72,6 +124,8 @@ var tick = function() {
     if (_world == null) return;
     _world.tick();
 
+
+    if (_packetHandler == null) return;
     var ph = _packetHandler;
     if (ph.entity != null) {
         var pos = ph.entity.getComponent(PlayerPositionComponent);

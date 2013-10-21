@@ -44,19 +44,26 @@ PlayerPositionComponent.prototype.getInterpolated = function() {
     } else {
         var now = this.interpolationQueue[0];
         var next = this.interpolationQueue[1];
+        var interval = this.updateInterval;
 
-        var interpolated = new InterpPair(Utils.interpolateLinear(now.x, next.x, ((this.updateInterval - this.interpolationCounter) / this.updateInterval)),
-            Utils.interpolateLinear(now.y, next.y, ((this.updateInterval - this.interpolationCounter) / this.updateInterval)),
-            Utils.interpolateLinear(now.z, next.z, ((this.updateInterval - this.interpolationCounter) / this.updateInterval)),
-            Utils.interpolateLinear(now.yaw, next.yaw, ((this.updateInterval - this.interpolationCounter) / this.updateInterval)),
-            Utils.interpolateLinear(now.pitch, next.pitch, ((this.updateInterval - this.interpolationCounter) / this.updateInterval)));
+        if (this.interpolationQueue.length > 4) {
+            interval -= this.interpolationQueue.length - 4;
+        }
+
+        if (this.interpolationCounter > interval) this.interpolationCounter = interval;
+
+        var interpolated = new InterpPair(Utils.interpolateLinear(now.x, next.x, ((interval - this.interpolationCounter) / interval)),
+            Utils.interpolateLinear(now.y, next.y, ((interval - this.interpolationCounter) / interval)),
+            Utils.interpolateLinear(now.z, next.z, ((interval - this.interpolationCounter) / interval)),
+            Utils.interpolateLinear(now.yaw, next.yaw, ((interval - this.interpolationCounter) / interval)),
+            Utils.interpolateLinear(now.pitch, next.pitch, ((interval - this.interpolationCounter) / interval)));
 
         if (this.interpolationCounter == 0) {
             this.interpolationQueue.shift();
             if (this.interpolationQueue.length == 1) {
                 this.interpolationQueue = [];
             } else {
-                this.interpolationCounter = this.updateInterval;
+                this.interpolationCounter = interval;
             }
         }
 
